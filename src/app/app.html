@@ -1,5 +1,5 @@
 <ion-menu [content]="content" persistent="true">
-    <ion-header class="header-color" padding-top>
+    <ion-header padding-top>
       <div padding text-center>
         <img src="http://chronicle.com/blogs/profhacker/files/2013/04/Professortocat_v2-300x300.png"/>
         <h6>User Name</h6>
@@ -7,8 +7,67 @@
       </div>
     </ion-header>
   
-    <ion-content>
+    <ion-content class="bg-style">
+        <div class="border_bottom">
+            </div>
+            <ion-list no-lines>
+        
+            <div class="border_bottom">
+            <div class="border_bottom_top">
+                <button menuClose ion-item (click)="openPage(0)">
+                <ion-icon name='ios-contact' item-start color="yellow"></ion-icon>
+                My Profile
+                </button>
+            </div>
+            </div>
+    
+            <div class="border_bottom">
+            <div class="border_bottom_top">
+                <button menuClose ion-item (click)="openPage(1)">
+                <ion-icon name='md-card' item-start color="primary"></ion-icon>
+                My Cards
+                </button>
+            </div>
+            <div class="border_bottom_top">
+                <button menuClose ion-item (click)="openPage(2)">
+                <ion-icon name='logo-yen' item-start color="warning"></ion-icon>
+                Send MoneySend Money
+                </button>
+            </div>
+            </div>
+    
+            <div class="border_bottom">
+            <div class="border_bottom_top">
+                <button menuClose ion-item (click)="openPage(3)">
+                <ion-icon name='ios-settings' item-start color="primary"></ion-icon>
+                My Setting
+                </button>
+            </div>
+            </div>
+    
+            <div class="border_bottom">
+            <div class="border_bottom_top">
+                <button menuClose ion-item (click)="openPage(4)">
+                <ion-icon name='md-help' item-start color="danger"></ion-icon>
+                Support
+                </button>
+            </div>
+            </div>
+        
+        </ion-list>
+        
     </ion-content>
+
+
+            
+    <ion-footer >
+            <div class="border_bottom_top">
+                <button ion-button full color="danger" clear icon-right>
+                    Logout 
+                    <ion-icon name="ios-log-out"></ion-icon>
+                </button>
+            </div>
+    </ion-footer>
   </ion-menu>
 
 <ion-nav [root]="rootPage" #content></ion-nav>

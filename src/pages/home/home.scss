@@ -15,11 +15,11 @@ page-home {
         font-size: 25px;
     }
     .label-M{
-        font-size: font-size($font-size,mid);
+        font-size: 13px;
         color:color($colors, neutraldark3, base);
     }
     .label-M-white{
-        font-size: font-size($font-size,mid);
+        font-size: 13px;
         color:color($colors, white, base);
     }
     .label-S{
@@ -34,14 +34,11 @@ page-home {
     }
 
     .background-primary{
-        background-color:color($colors, primary, base);;
+        background-color:color($colors, primary, base);
     }
     .sub-header{
         border-bottom:1px solid #e0e0e0;
         background-color: white;
     }
 
-    $font-size: (
-        mid: 13px,
-    );
 }
