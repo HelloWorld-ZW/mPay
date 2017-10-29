@@ -4,7 +4,7 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 
-import { MyApp } from './app.component';
+import { mPay } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { FriendsPage } from '../pages/friends/friends';
 import { HistoryPage } from '../pages/history/history';
@@ -12,7 +12,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 
 @NgModule({
   declarations: [
-    MyApp,
+    mPay,
     HomePage,
     HistoryPage,
     FriendsPage,
@@ -20,11 +20,11 @@ import { TabsPage } from '../pages/tabs/tabs';
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(mPay)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp,
+    mPay,
     HomePage,
     HistoryPage,
     FriendsPage,
