@@ -1,3 +1,47 @@
 page-home {
+    ion-navbar{
+        img {
+            border-radius: 50%;
+            width: 32px;
+            height: auto;
+            margin-right: 15px;
+        }
+    }
 
+    .icon-M{
+        font-size: 28px;
+    }
+    .icon-S{
+        font-size: 25px;
+    }
+    .label-M{
+        font-size: font-size($font-size,mid);
+        color:color($colors, neutraldark3, base);
+    }
+    .label-M-white{
+        font-size: font-size($font-size,mid);
+        color:color($colors, white, base);
+    }
+    .label-S{
+        font-size: 10px;
+    }
+    .content-center{
+        text-align: center;
+        width: 25%;
+    }
+    .toolbar-md {
+      min-height: 70px;
+    }
+
+    .background-primary{
+        background-color:color($colors, primary, base);;
+    }
+    .sub-header{
+        border-bottom:1px solid #e0e0e0;
+        background-color: white;
+    }
+
+    $font-size: (
+        mid: 13px,
+    );
 }

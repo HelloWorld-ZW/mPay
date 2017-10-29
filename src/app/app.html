@@ -1,1 +1,14 @@
-<ion-nav [root]="rootPage"></ion-nav>
+<ion-menu [content]="content" persistent="true">
+    <ion-header class="header-color" padding-top>
+      <div padding text-center>
+        <img src="http://chronicle.com/blogs/profhacker/files/2013/04/Professortocat_v2-300x300.png"/>
+        <h6>User Name</h6>
+        <span>Balance: $999.00</span>
+      </div>
+    </ion-header>
+  
+    <ion-content>
+    </ion-content>
+  </ion-menu>
+
+<ion-nav [root]="rootPage" #content></ion-nav>
