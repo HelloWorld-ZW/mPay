@@ -20,7 +20,7 @@ export class LoginPage {
     //console.log('ionViewDidLoad LoginPage');
   }
 
-  _loginBtn_press(){
+  _onLoginPress(){
     this.presentLoading();
     //console.log(this.login_email, this.login_password);
     setTimeout( ()=>{ 

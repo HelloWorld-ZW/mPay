@@ -1,7 +1,80 @@
-<ion-tabs>
-    <ion-tab [root]="tab1Root" tabTitle="Home" tabIcon="home"></ion-tab>
+<ion-menu [content]="content" persistent="true">
+    <ion-header padding-top>
+      <div padding text-center>
+        <img src="http://chronicle.com/blogs/profhacker/files/2013/04/Professortocat_v2-300x300.png"/>
+        <h6>User Name</h6>
+        <span>Balance: $999.00</span>
+      </div>
+    </ion-header>
+  
+    <ion-content class="bg-style">
+        <div class="border_bottom">
+            </div>
+            <ion-list no-lines>
+        
+            <div class="border_bottom">
+            <div class="border_bottom_top">
+                <button menuClose ion-item (click)="openPage(0)" class="btn-font-size">
+                <ion-icon name='ios-contact' item-start color="yellow"></ion-icon>
+                My Profile
+                </button>
+            </div>
+            </div>
+    
+            <div class="border_bottom">
+            <div class="border_bottom_top">
+                <button menuClose ion-item (click)="openPage(1)" class="btn-font-size">
+                <ion-icon name='ios-card' item-start color="primary"></ion-icon>
+                My Cards
+                </button>
+            </div>
+            <div class="border_bottom_top">
+                <button menuClose ion-item (click)="openPage(2)" class="btn-font-size">
+                <ion-icon name='logo-yen' item-start color="warning"></ion-icon>
+                Send Money
+                </button>
+            </div>
+            </div>
+    
+            <div class="border_bottom">
+            <div class="border_bottom_top">
+                <button menuClose ion-item (click)="openPage(3)" class="btn-font-size">
+                <ion-icon name='ios-cog' item-start color="primary"></ion-icon>
+                My Setting
+                </button>
+            </div>
+            </div>
+    
+            <div class="border_bottom">
+            <div class="border_bottom_top">
+                <button menuClose ion-item (click)="openPage(4)" class="btn-font-size">
+                <ion-icon name='md-help' item-start color="danger"></ion-icon>
+                Support
+                </button>
+            </div>
+            </div>
+        
+        </ion-list>
+        
+    </ion-content>
+
+
+            
+    <ion-footer >
+            <div class="border_bottom_top">
+                <button ion-button full color="danger" clear icon-right style="font-weight:bold">
+                    Logout 
+                    <ion-icon name="md-log-out"></ion-icon>
+                </button>
+            </div>
+    </ion-footer>
+  </ion-menu> 
+
+
+<ion-tabs #content>
+    <ion-tab [root]="tab1Root" tabTitle="Home" tabIcon="home" ></ion-tab>
     <ion-tab [root]="tab2Root" tabTitle="Friends" tabIcon="ios-contacts"></ion-tab>
     <ion-tab [root]="tab3Root" tabTitle="History" tabIcon="ios-list-box"></ion-tab>
     <!-- <ion-tab [root]="tab4Root" tabTitle="Settings" tabIcon="ios-settings"></ion-tab> -->
-  </ion-tabs>
+</ion-tabs>
   

@@ -1,12 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import { LoginPage } from '../../pages/login/login';
 
-/**
- * Generated class for the LandingPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+
 
 @Component({
   selector: 'page-landing',
@@ -21,4 +17,7 @@ export class LandingPage {
     console.log('ionViewDidLoad LandingPage');
   }
 
+  _onSigninPress(){
+    this.navCtrl.push(LoginPage);
+  }
 }

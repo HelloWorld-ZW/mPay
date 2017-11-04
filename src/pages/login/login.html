@@ -1,22 +1,26 @@
-<ion-content class="background">
-	<ion-card>
-		<ion-card-header>
-			Login
-		</ion-card-header>
-		<ion-card-content>
-			<ion-list no-line>
-				<ion-item>
-					<ion-input type="email" placeholder="Email" [(ngModel)]="login_email"></ion-input>
-				</ion-item>
-				<ion-item>
-					<ion-input type="password" placeholder="Password" [(ngModel)]="login_password"></ion-input>
-				</ion-item>
-				
-        <button ion-button block color="primary" (click)="_loginBtn_press()">Log in</button>
-        <a>Forgot login detail ?</a>
-				
-			</ion-list>
-		</ion-card-content>
-	</ion-card>
-	<button class="bottom" ion-button clear full color="light">Sign up</button>
+<ion-header>
+	<ion-navbar color="primary">
+		<ion-title>Sing in</ion-title>
+	</ion-navbar>
+</ion-header>
+
+
+<ion-content>
+	<ion-list padding-left padding-right>
+
+		<ion-item>
+			<ion-label floating>Email</ion-label>
+			<ion-input type="text" value=""></ion-input>
+		</ion-item>
+
+		<ion-item>
+			<ion-label floating>Password</ion-label>
+			<ion-input type="password" value=""></ion-input>
+		</ion-item>
+
+	</ion-list>
+
+	<div padding>
+		<button ion-button color="primary" block (click)="_onLoginPress()">Sign In</button>
+	</div>
 </ion-content>

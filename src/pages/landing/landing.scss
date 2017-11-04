@@ -1,3 +1,20 @@
 page-landing {
-
+    .scroll-content {
+		align-content: center;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		text-align: center;
+    }
+    .logo_div{
+        margin-bottom: 2em;
+    }
+    .button_div{
+        padding:5px;
+    }
+    ion-footer{
+        div{
+            text-align: center;
+        }
+    }
 }

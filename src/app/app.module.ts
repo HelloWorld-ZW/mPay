@@ -10,6 +10,7 @@ import { FriendsPage } from '../pages/friends/friends';
 import { HistoryPage } from '../pages/history/history';
 import { TabsPage } from '../pages/tabs/tabs';
 import { LoginPage } from '../pages/login/login';
+import { LandingPage } from '../pages/landing/landing';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { LoginPage } from '../pages/login/login';
     HistoryPage,
     FriendsPage,
     TabsPage,
-    LoginPage
+    LoginPage,
+    LandingPage
   ],
   imports: [
     BrowserModule,
@@ -31,7 +33,8 @@ import { LoginPage } from '../pages/login/login';
     HistoryPage,
     FriendsPage,
     TabsPage,
-    LoginPage
+    LoginPage,
+    LandingPage
   ],
   providers: [
     StatusBar,
