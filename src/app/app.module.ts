@@ -11,6 +11,7 @@ import { HistoryPage } from '../pages/history/history';
 import { TabsPage } from '../pages/tabs/tabs';
 import { LoginPage } from '../pages/login/login';
 import { LandingPage } from '../pages/landing/landing';
+import { SignupPage } from '../pages/signup/signup';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { LandingPage } from '../pages/landing/landing';
     FriendsPage,
     TabsPage,
     LoginPage,
-    LandingPage
+    LandingPage,
+    SignupPage
   ],
   imports: [
     BrowserModule,
@@ -34,7 +36,8 @@ import { LandingPage } from '../pages/landing/landing';
     FriendsPage,
     TabsPage,
     LoginPage,
-    LandingPage
+    LandingPage,
+    SignupPage
   ],
   providers: [
     StatusBar,

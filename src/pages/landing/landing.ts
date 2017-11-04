@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { LoginPage } from '../../pages/login/login';
-
+import { SignupPage } from '../../pages/signup/signup';
 
 
 @Component({
@@ -19,5 +19,9 @@ export class LandingPage {
 
   _onSigninPress(){
     this.navCtrl.push(LoginPage);
+  }
+
+  _onSignupPress(){
+    this.navCtrl.push(SignupPage);
   }
 }
