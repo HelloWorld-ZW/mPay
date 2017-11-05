@@ -12,22 +12,22 @@
   
   <ion-item>
     <ion-label floating><ion-icon name="md-person"></ion-icon> Full name</ion-label>
-    <ion-input clearInput type="text" value=""></ion-input>
+    <ion-input clearInput type="text" value="" [(ngModel)]="fullname"></ion-input>
   </ion-item>
 
   <ion-item>
     <ion-label floating><ion-icon name="md-mail"></ion-icon> Email</ion-label>
-    <ion-input clearInput type="email" value=""></ion-input>
+    <ion-input clearInput type="email" value="" [(ngModel)]="email"></ion-input>
   </ion-item>
   
   <ion-item>
       <ion-label floating><ion-icon name="md-call"></ion-icon> Phone</ion-label>
-      <ion-input clearInput type="text" value=""></ion-input>
+      <ion-input clearInput type="number" pattern="[0-9]*" [(ngModel)]="phone" mask="+353 *********"></ion-input>
   </ion-item>
 
   <ion-item>
     <ion-label floating><ion-icon name="md-lock"> </ion-icon> Password</ion-label>
-    <ion-input clearInput type="password" value=""></ion-input>
+    <ion-input clearInput type="password" value="" [(ngModel)]="password"></ion-input>
   </ion-item>
 
   <div padding>
