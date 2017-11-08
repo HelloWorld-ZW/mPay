@@ -40,7 +40,7 @@ export class SignupPage {
   async signupReturns(){
     const info = await this.signupProvider.doAccountSignUp(this.email, this.fullname, this.phone, this.password, this.type).then(data=>{return data;});
     console.log(info);
-    //alert(info);
+    alert(info['status']);
   }
 
   onTypeChange(selectedValue: any){

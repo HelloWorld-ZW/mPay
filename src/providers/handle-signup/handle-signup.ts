@@ -11,15 +11,16 @@ export class HandleSignupProvider {
   }
 
   doAccountSignUp(email:string, name:string, phone:string, password:string, type:string){
-    let url = "http://192.168.1.9:8080/hashServer/accountServ";
-    // let data = JSON.stringify({
-    //   "email": email,
-    //   "name":name,
-    //   "phone":phone,
-    //   "password":password,
-    //   "type":type
-    // });
-    let data = "hello world";
+    //let url = "http://192.168.1.9:8080/hashServer/accountServ";
+    let url = "http://172.21.6.220:8080/hashServer/accountServ";
+    let data = JSON.stringify({
+      "email": email,
+      "name":name,
+      "phone":phone,
+      "password":password,
+      "type":type
+    });
+    //let data = "hello world";
     let headers = new Headers({'Content-Type': 'application/json'});
     let options = new RequestOptions({ headers: headers });
     
