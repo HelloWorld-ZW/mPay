@@ -12,6 +12,9 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { LoginPage } from '../pages/login/login';
 import { LandingPage } from '../pages/landing/landing';
 import { SignupPage } from '../pages/signup/signup';
+import { HandleSignupProvider } from '../providers/handle-signup/handle-signup';
+
+import { HttpModule } from '@angular/http';
 
 @NgModule({
   declarations: [
@@ -26,7 +29,8 @@ import { SignupPage } from '../pages/signup/signup';
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(mPay)
+    IonicModule.forRoot(mPay),
+    HttpModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -42,7 +46,8 @@ import { SignupPage } from '../pages/signup/signup';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    HandleSignupProvider
   ]
 })
 export class AppModule {}

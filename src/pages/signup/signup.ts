@@ -1,7 +1,7 @@
 import { Component, Directive } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { NgModel } from '@angular/forms';
-
+import { HandleSignupProvider } from '../../providers/handle-signup/handle-signup';
 
 @Component({
   selector: 'page-signup',
@@ -18,8 +18,10 @@ export class SignupPage {
   password:string;
   type:string="personal";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-      //<ion-icon name="md-person"></ion-icon> Full name<
+
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, public signupProvider:HandleSignupProvider) {
+
   }
 
   ionViewDidLoad() {
@@ -27,8 +29,18 @@ export class SignupPage {
   }
 
   _onNextPress(){
-    alert(this.fullname+"\n"+this.email+"\n"+this.phone+"\n"+this.password);
-    alert("TODO: Send email verification code");
+    //alert(this.fullname+"\n"+this.email+"\n"+this.phone+"\n"+this.password);
+    //alert("TODO: Send email verification code");
+
+    //alert(this.signupProvider.doAccountSignUp(this.email, this.fullname, this.phone, this.password, this.type));
+    this.signupReturns();
+
+  }
+
+  async signupReturns(){
+    const info = await this.signupProvider.doAccountSignUp(this.email, this.fullname, this.phone, this.password, this.type).then(data=>{return data;});
+    console.log(info);
+    //alert(info);
   }
 
   onTypeChange(selectedValue: any){
