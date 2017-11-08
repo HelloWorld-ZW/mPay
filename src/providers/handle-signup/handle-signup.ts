@@ -21,20 +21,20 @@ export class HandleSignupProvider {
       "type":type
     });
     //let data = "hello world";
-    let headers = new Headers({'Content-Type': 'application/json'});
+    let headers = new Headers({'Content-Type': 'application/json',
+                    "Accept":'application/json'
+                    });
+                    
     let options = new RequestOptions({ headers: headers });
     
     return new Promise(resolve => {
       this.http.post(url, data, options)
         .map(res => res.json()).subscribe(data => {
             let responseData = data;
-            //alert("data");
-            //return responseData.ip;
-            //resolve(responseData.ip);
             resolve(responseData);            
         },
         err => {
-          return err;
+          alert(err);
         });
     });
   }
