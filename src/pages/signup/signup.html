@@ -11,7 +11,15 @@
 <ion-content padding>
   
   <ion-item>
-    <ion-label floating><ion-icon name="md-person"></ion-icon> Full name</ion-label>
+    <ion-label>Account Type</ion-label>
+    <ion-select [(ngModel)]="type" interface="popover" (ionChange)="onTypeChange($event)">
+      <ion-option value="personal">Personal</ion-option>
+      <ion-option value="business">Business</ion-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item>
+    <ion-label floating><ion-icon [name]="nameIcon"></ion-icon>{{nameLabel}}</ion-label>
     <ion-input clearInput type="text" value="" [(ngModel)]="fullname"></ion-input>
   </ion-item>
 
