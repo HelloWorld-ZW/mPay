@@ -15,6 +15,8 @@ import { SignupPage } from '../pages/signup/signup';
 import { HandleSignupProvider } from '../providers/handle-signup/handle-signup';
 
 import { HttpModule } from '@angular/http';
+import { CryptographyProvider } from '../providers/cryptography/cryptography';
+import { IonicStorageModule } from '@ionic/storage';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,8 @@ import { HttpModule } from '@angular/http';
   imports: [
     BrowserModule,
     IonicModule.forRoot(mPay),
-    HttpModule
+    HttpModule,
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -47,7 +50,8 @@ import { HttpModule } from '@angular/http';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    HandleSignupProvider
+    HandleSignupProvider,
+    CryptographyProvider
   ]
 })
 export class AppModule {}

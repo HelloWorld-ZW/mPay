@@ -3,6 +3,8 @@ import { NavController, NavParams } from 'ionic-angular';
 import { NgModel } from '@angular/forms';
 import { HandleSignupProvider } from '../../providers/handle-signup/handle-signup';
 
+import { CryptographyProvider } from '../../providers/cryptography/cryptography';
+
 @Component({
   selector: 'page-signup',
   templateUrl: 'signup.html',
@@ -20,7 +22,8 @@ export class SignupPage {
 
 
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public signupProvider:HandleSignupProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, 
+    public signupProvider:HandleSignupProvider, public cryptographyProvider:CryptographyProvider) {
 
   }
 
@@ -33,7 +36,12 @@ export class SignupPage {
     //alert("TODO: Send email verification code");
 
     //alert(this.signupProvider.doAccountSignUp(this.email, this.fullname, this.phone, this.password, this.type));
-    this.signupReturns();
+    
+    
+    //this.signupReturns(); //DO NOT Delete
+
+    //this.cryptographyProvider.getServerPbk();
+    this.cryptographyProvider.getPbkFromLocal();
 
   }
 
