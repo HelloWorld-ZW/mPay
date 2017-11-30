@@ -5,11 +5,13 @@ import 'rxjs/add/operator/map';
 import { Storage } from '@ionic/storage';
 import * as randomString from 'randomstring';
 import * as nodeRSA from 'node-rsa';
+import { Device } from '@ionic-native/device';
+
 
 @Injectable()
 export class CryptographyProvider {
 
-  serverPbkAPI:string ="http://192.168.1.9:8080/mServer/publicKeyApi";
+  serverPbkAPI:string ="http://172.21.6.179:8080/mServer/publicKeyApi";
   headers:Headers;
   options: RequestOptions;
 
@@ -17,7 +19,8 @@ export class CryptographyProvider {
   SymmertricKey:any;
 
   constructor(public http: Http,
-    private storage:Storage) {
+    private storage:Storage,
+    private device:Device) {
     
       this.headers = new Headers({
         'Content-Type': 'application/json',
@@ -32,14 +35,14 @@ export class CryptographyProvider {
 
   }
 
-  getPbkFromServer(){
+  // getPbkFromServer(){
     
-    this.http.get(this.serverPbkAPI).map(res => res.json()).subscribe(data => {
-      console.log(data.key);
-      this.storage.set("serverPbulicKey", data.key);
-    });
+  //   this.http.get(this.serverPbkAPI).map(res => res.json()).subscribe(data => {
+  //     console.log(data.key);
+  //     this.storage.set("serverPbulicKey", data.key);
+  //   });
 
-  }
+  // }
 
 
   getPbkFromLocal(){
@@ -61,18 +64,32 @@ export class CryptographyProvider {
     console.log(this.publicKey);
   }
 
-  generateSymmetricKeys(){
+  genRandString(){
     return randomString.generate({
       length:16,
       charset:'alphanumeric'
     });
   }
 
+  genSymmetricKey(){
+    this.SymmertricKey = JSON.stringify({
+      "uuid":this.device.uuid,
+      "key":this.genRandString(),
+      "iv":this.genRandString()
+    });
+  }
+
+
+  RSAEncryptSymmetricKey(key:string){
+    
+  }
+
   sentSymmetricKeyToServer(){
     // To do :  symmertricKey identify (判定key是哪位用户的)
     this.SymmertricKey = JSON.stringify({
-      "key":this.generateSymmetricKeys(),
-      "iv":this.generateSymmetricKeys()
+      "uuid":this.device.uuid,
+      "key":this.genRandString(),
+      "iv":this.genRandString()
     });
 
     var key=new nodeRSA();  
@@ -84,5 +101,18 @@ export class CryptographyProvider {
     console.log(cipher);
   }
 
+  RSAEncryptionUseServerPBK(data:string){
+    
+    this.getPbkFromLocal();
+    var key=new nodeRSA();  
+    key.setOptions({encryptionScheme: 'pkcs1'}) 
+    var keyData = '-----BEGIN PUBLIC KEY-----' +this.publicKey+ '-----END PUBLIC KEY-----';
+    key.importKey(keyData, 'pkcs8-public');
+    
+    var cipher = key.encrypt(data,'base64');
+    return cipher;
+  }
+
+  // Do Decrypt and Encrypt operation here.
 
 }

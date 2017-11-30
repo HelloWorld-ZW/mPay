@@ -41,7 +41,9 @@ export class SignupPage {
     //this.signupReturns(); //DO NOT Delete
 
     //this.cryptographyProvider.getPbk();
-    this.cryptographyProvider.sentSymmetricKeyToServer();
+
+    this.cryptographyProvider.getPbk();
+    //this.cryptographyProvider.sentSymmetricKeyToServer();
 
   }
 

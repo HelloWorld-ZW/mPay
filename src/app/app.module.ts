@@ -17,6 +17,9 @@ import { HandleSignupProvider } from '../providers/handle-signup/handle-signup';
 import { HttpModule } from '@angular/http';
 import { CryptographyProvider } from '../providers/cryptography/cryptography';
 import { IonicStorageModule } from '@ionic/storage';
+import { Device } from '@ionic-native/device';
+import { HelperProvider } from '../providers/helper/helper';
+import { CommunicationProvider } from '../providers/communication/communication';
 
 @NgModule({
   declarations: [
@@ -51,7 +54,10 @@ import { IonicStorageModule } from '@ionic/storage';
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     HandleSignupProvider,
-    CryptographyProvider
+    CryptographyProvider,
+    HelperProvider,
+    Device,
+    CommunicationProvider
   ]
 })
 export class AppModule {}
