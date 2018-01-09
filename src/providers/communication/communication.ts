@@ -2,16 +2,20 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions} from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Storage } from '@ionic/storage';
+import { CryptographyProvider } from '../cryptography/cryptography';
+import { HelperProvider } from '../helper/helper';
 
 @Injectable()
 export class CommunicationProvider {
 
-  host:string = "http://192.168.1.9:8080/aServer/";
+  host:string = "http://192.168.1.9:8080/mPay_server/";
   headers: any;
   options: any;
 
   constructor(public http: Http,
-    private storage: Storage) {
+    private storage: Storage,
+    private cryptography: CryptographyProvider,
+    private helper: HelperProvider,) {
 
       this.headers = new Headers({'Content-Type': 'application/json',
       "Accept":'application/json'
@@ -25,14 +29,25 @@ export class CommunicationProvider {
     var url = this.host+"publicKeyApi";
     this.http.get(url).map(res => res.json()).subscribe(data => {
       console.log(data.key);
-      this.storage.set("serverPbulicKey", data.key);
+      this.storage.set("serverPublicKey", data.key);
     });
   }
 
+  /*
   postSymmetricKey(key:any){
     var url = this.host+"getSymmetricKey";
+    
+    return new Promise(resolve => {
+      this.http.post(url, key, this.options)
+        .map(res => res.json()).subscribe(data => {
+            let responseData = data;
+            resolve(responseData);            
+        },
+        err => {
+          alert(err);
+        });
+    });
 
-    // do post method
   }
 
   postDeviceInfo(info:any){
@@ -42,6 +57,101 @@ export class CommunicationProvider {
       this.http.post(url, info, this.options)
         .map(res => res.json()).subscribe(data => {
             let responseData = data;
+            resolve(responseData);            
+        },
+        err => {
+          alert(err);
+        });
+    });
+  }
+
+  postDeviceInfoAndSymmetricKeys(data:any){
+    var url = this.host+"getDeviceAndKey";
+    
+      return new Promise(resolve => {
+        this.http.post(url, data, this.options)
+          .map(res => res.json()).subscribe(data => {
+              let responseData = data;
+              resolve(responseData);            
+          },
+          err => {
+            alert(err);
+          });
+      });
+      
+  }
+*/
+  postDeviceInfoAndSymmetricKey(){
+    var url = this.host+"getDeviceAndKey";
+
+    var cipher = this.cryptography.RSAEncryptionUseServerPBK(this.helper.getDeviceInfoAndGenerateKeys());
+    
+    var data = JSON.stringify({
+      "cipher": cipher
+    });
+
+    return new Promise(resolve => {
+      this.http.post(url, data, this.options)
+        .map(res => res.json()).subscribe(data => {
+            let responseData = data;
+            resolve(responseData);            
+        },
+        err => {
+          alert(err);
+        });
+    });
+  }
+
+  /*
+  doAccountSignUp(email:string, fullname:string, phone:string, password:string, type:string){
+    let url = this.host+"doAccountRegister";
+
+    var hashedPSW = this.cryptography.Sha1Hash(password);
+    var regData = JSON.stringify({
+      'email':email,
+      'fullname':fullname,
+      'phone':phone,
+      'password':hashedPSW,
+      'type':type
+    });
+
+    var regCipher = this.cryptography.AESEncryption(regData);
+
+    var cipherWithDevice = JSON.stringify({
+      'device': this.helper.getDeviceUUID(),
+      'cipher': regCipher
+    });
+
+    return new Promise(resolve => {
+      this.http.post(url, cipherWithDevice, this.options)
+        .map(res => res.json()).subscribe(data => {
+            let responseData = data;
+            console.log(responseData);  
+            resolve(responseData);            
+        },
+        err => {
+          alert(err);
+        });
+    });
+    //console.log(cipherWithDevicc);
+  }
+  */
+
+  doAccountSignIn(email:string, password:string){
+    
+    let url = this.host+"doAccountSignIn";
+    var hashPassword = this.cryptography.Sha1Hash(password).toString();
+    console.log(email);
+    var loginData = JSON.stringify({
+      'login_email': email,
+      'login_password': hashPassword
+    });
+
+    return new Promise(resolve => {
+      this.http.post(url, loginData, this.options)
+        .map(res => res.json()).subscribe(data => {
+            let responseData = data;
+            console.log(responseData);  
             resolve(responseData);            
         },
         err => {

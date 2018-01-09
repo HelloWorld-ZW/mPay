@@ -4,6 +4,7 @@ import { NgModel } from '@angular/forms';
 import { HandleSignupProvider } from '../../providers/handle-signup/handle-signup';
 
 import { CryptographyProvider } from '../../providers/cryptography/cryptography';
+import { CommunicationProvider } from '../../providers/communication/communication';
 
 @Component({
   selector: 'page-signup',
@@ -23,7 +24,8 @@ export class SignupPage {
 
 
   constructor(public navCtrl: NavController, public navParams: NavParams, 
-    public signupProvider:HandleSignupProvider, public cryptographyProvider:CryptographyProvider) {
+    public signupProvider:HandleSignupProvider, public cryptographyProvider:CryptographyProvider,
+    public communication:CommunicationProvider) {
 
   }
 
@@ -42,7 +44,11 @@ export class SignupPage {
 
     //this.cryptographyProvider.getPbk();
 
-    this.cryptographyProvider.getPbk();
+    //this.communication.doAccountSignUp(this.email, this.fullname, this.phone, this.password, this.type);
+    
+    //var iv = this.cryptographyProvider.AESEncryption("a");
+    
+    //console.log(iv);
     //this.cryptographyProvider.sentSymmetricKeyToServer();
 
   }

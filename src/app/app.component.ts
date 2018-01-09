@@ -14,7 +14,7 @@ import { HelperProvider } from '../providers/helper/helper';
   templateUrl: 'app.html'
 })
 export class mPay {
-  rootPage:any = LandingPage;
+  rootPage:any = LoginPage;
 
   constructor(platform: Platform, statusBar: StatusBar, 
     splashScreen: SplashScreen, 
@@ -29,7 +29,8 @@ export class mPay {
       this.communication.getPbkFromServer();
 
       setTimeout( ()=>{ 
-         this.helper.EncAndPostData();
+         //this.helper.EncAndPostDeviceInfoAndSymmetricKey();
+         this.communication.postDeviceInfoAndSymmetricKey();
       }, 500);
      
     });
