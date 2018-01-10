@@ -90,6 +90,7 @@ export class HelperProvider {
   getDeviceUUID(){
     return this.device.uuid;
   }
+
   getDeviceInfoAndGenerateKeys(){
     
     var key = this.genRandString();
@@ -113,6 +114,13 @@ export class HelperProvider {
     return data;
   }
 
+  getFromLocalStroage(key:string){
+    return this.storage.get(key);
+  }
+
+  setToLocalStorage(key:string, data:any){
+    this.storage.set(key,data);
+  }
 
 
   // EncAndPostDeviceInfoAndSymmetricKey(){

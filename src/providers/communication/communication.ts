@@ -102,40 +102,40 @@ export class CommunicationProvider {
     });
   }
 
-  /*
+  
   doAccountSignUp(email:string, fullname:string, phone:string, password:string, type:string){
-    let url = this.host+"doAccountRegister";
+    // let url = this.host+"doAccountRegister";
 
-    var hashedPSW = this.cryptography.Sha1Hash(password);
-    var regData = JSON.stringify({
-      'email':email,
-      'fullname':fullname,
-      'phone':phone,
-      'password':hashedPSW,
-      'type':type
-    });
+    // var hashedPSW = this.cryptography.Sha1Hash(password);
+    // var regData = JSON.stringify({
+    //   'email':email,
+    //   'fullname':fullname,
+    //   'phone':phone,
+    //   'password':hashedPSW,
+    //   'type':type
+    // });
 
-    var regCipher = this.cryptography.AESEncryption(regData);
+    // var regCipher = this.cryptography.AESEncryption(regData);
 
-    var cipherWithDevice = JSON.stringify({
-      'device': this.helper.getDeviceUUID(),
-      'cipher': regCipher
-    });
+    // var cipherWithDevice = JSON.stringify({
+    //   'device': this.helper.getDeviceUUID(),
+    //   'cipher': regCipher
+    // });
 
-    return new Promise(resolve => {
-      this.http.post(url, cipherWithDevice, this.options)
-        .map(res => res.json()).subscribe(data => {
-            let responseData = data;
-            console.log(responseData);  
-            resolve(responseData);            
-        },
-        err => {
-          alert(err);
-        });
-    });
+    // return new Promise(resolve => {
+    //   this.http.post(url, cipherWithDevice, this.options)
+    //     .map(res => res.json()).subscribe(data => {
+    //         let responseData = data;
+    //         console.log(responseData);  
+    //         resolve(responseData);            
+    //     },
+    //     err => {
+    //       alert(err);
+    //     });
+    // });
     //console.log(cipherWithDevicc);
   }
-  */
+  
 
   doAccountSignIn(email:string, password:string){
     
@@ -144,14 +144,15 @@ export class CommunicationProvider {
     console.log(email);
     var loginData = JSON.stringify({
       'login_email': email,
-      'login_password': hashPassword
+      'login_password': hashPassword,
+      'device_UUID': this.helper.getDeviceUUID()
     });
 
     return new Promise(resolve => {
       this.http.post(url, loginData, this.options)
-        .map(res => res.json()).subscribe(data => {
+        .map(res => res.text()).subscribe(data => {
             let responseData = data;
-            console.log(responseData);  
+            //this.helper.setToLocalStorage("logindata",data);
             resolve(responseData);            
         },
         err => {

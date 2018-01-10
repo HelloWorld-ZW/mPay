@@ -7,6 +7,8 @@ import * as randomString from 'randomstring';
 import * as nodeRSA from 'node-rsa';
 import { Device } from '@ionic-native/device';
 import * as aesCorss from 'aes-cross';
+import * as buffer from 'buffer';
+import * as convertString from 'convert-string';
 import * as SHA1 from 'crypto-js/SHA1';
 import { HelperProvider } from '../helper/helper';
 
@@ -31,7 +33,7 @@ export class CryptographyProvider {
       
       setTimeout(()=>{
         this.getKeysFromLocal('symmetricKey');
-      },1000);
+      },3000);
   }
 
   // getPbkFromServer(){
@@ -104,12 +106,19 @@ export class CryptographyProvider {
 
   AESEncryption(plaintext:string){
     var keys = JSON.parse(this.symmertricKey);
-    var ciphertext = aesCorss.encText(plaintext,keys.key,keys.iv);
+    var key = new buffer.Buffer(convertString.stringToBytes(keys.key));
+    var iv = new buffer.Buffer(convertString.stringToBytes(keys.iv));
+    var ciphertext = aesCorss.encText(plaintext,key,iv);
     return ciphertext;
   }
+
   AESDecryption(ciphertext:string){
+    var keys = JSON.parse(this.symmertricKey);
+    var key = new buffer.Buffer(convertString.stringToBytes(keys.key));
+    var iv = new buffer.Buffer(convertString.stringToBytes(keys.iv));
     
-    return null;
+    var plaintext = aesCorss.decText(ciphertext,key,iv);
+    return plaintext;
   }
   Sha1Hash(data:string){
     return SHA1(data);

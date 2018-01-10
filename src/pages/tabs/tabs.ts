@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import { NavController, NavParams } from 'ionic-angular';
 import {FriendsPage } from '../friends/friends';
 import { HistoryPage } from '../history/history';
 //import { SettingsPage } from '../settings/settings';
@@ -14,7 +14,7 @@ export class TabsPage {
   tab2Root = FriendsPage;
   tab3Root = HistoryPage;
   //tab4Root = SettingsPage;
-  constructor() {
-
+  constructor(public navParams: NavParams) {
+    //console.log(navParams);
   }
 }
