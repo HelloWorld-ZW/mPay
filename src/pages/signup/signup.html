@@ -9,41 +9,73 @@
 
 
 <ion-content padding>
-  <ion-list>
-  <ion-item>
-    <ion-label>Account Type</ion-label>
-    <ion-select [(ngModel)]="type" interface="popover" (ionChange)="onTypeChange($event)">
-      <ion-option value="personal">Personal</ion-option>
-      <ion-option value="business">Business</ion-option>
-    </ion-select>
-  </ion-item>
+    <form [formGroup]="formGroup" (ngSubmit)="submitSignUp()" > 
+        <ion-list>
+            <ion-item>
+              <ion-label>Account Type</ion-label>
+              <ion-select formControlName="type" name="type" interface="popover" (ionChange)="onTypeChange($event)">
+                <ion-option value="personal">Personal</ion-option>
+                <ion-option value="business">Business</ion-option>
+              </ion-select>
+            </ion-item>
+        
+            <ion-item>
+              <ion-label fixed>{{nameLabel}}</ion-label>
+              <ion-input clearInput type="text" formControlName="username" name="username" placeholder="required"> </ion-input>
+            </ion-item>
+        
+            <ion-item>
+              <ion-label fixed>Email</ion-label>
+              <ion-input clearInput type="email" formControlName="email" name="email"  placeholder="required" aria-required="true"></ion-input>
+            </ion-item>
+            
+            <ion-item>
+                <ion-label fixed>Phone No.</ion-label>
+                <ion-input clearInput type="number" formControlName="phone" name="phone" placeholder="required"></ion-input>
+            </ion-item>
+        
+            <ion-item>
+              <ion-label fixed>Password</ion-label>
+              <ion-input clearInput type="password"  formControlName="password"  name="password" placeholder="required"></ion-input>
+            </ion-item>
+        
+            <ion-item>
+              <ion-label fixed>Re-type</ion-label>
+              <ion-input clearInput type="password" formControlName="re_password" name="repassword" placeholder="required"></ion-input>
+            </ion-item>
+            <ion-item no-lines *ngIf="formGroup.get('re_password').hasError('equalTo') 
+                                  || formGroup.get('email').hasError('pattern')
+                                  || formGroup.get('password').hasError('pattern')
+                                  || formGroup.get('username').hasError('pattern')">
+                <div class="error" *ngIf="formGroup.get('re_password').hasError('equalTo') ">
+                  Password mismatch
+                </div>
 
-  <ion-item>
-    <ion-label fixed>{{nameLabel}}</ion-label>
-    <ion-input clearInput type="text" value="" [(ngModel)]="username" placeholder="Required"></ion-input>
-  </ion-item>
+                <div class="error" *ngIf="formGroup.get('email').hasError('pattern')">
+                  Invalid Email address
+                </div>
 
-  <ion-item>
-    <ion-label fixed>Email Add.</ion-label>
-    <ion-input clearInput type="email" value="" [(ngModel)]="email"  placeholder="Required" ></ion-input>
-  </ion-item>
-  
-  <ion-item>
-      <ion-label fixed>Phone No.</ion-label>
-      <ion-input clearInput type="number" pattern="[0-9]*" [(ngModel)]="phone" mask="+353 *********" placeholder="Required"></ion-input>
-  </ion-item>
+                <div class="error" *ngIf="formGroup.get('username').hasError('pattern')">
+                  No Special character allowed
+                </div>
 
-  <ion-item>
-    <ion-label fixed>Password</ion-label>
-    <ion-input clearInput type="password" value="" [(ngModel)]="password" placeholder="Required"></ion-input>
-  </ion-item>
+                <div class="error" *ngIf="formGroup.get('password').hasError('pattern')">
+                    - 8 characters long<br/>
+                    - 1 uppercase & 1 lowercase letter<br/>
+                    - 1 number
+                </div>
 
-  <ion-item>
-    <ion-label fixed>Re-type</ion-label>
-    <ion-input clearInput type="password" value="" [(ngModel)]="conf_password" placeholder="Required"></ion-input>
-  </ion-item>
-</ion-list>
-  <div padding>
-    <button ion-button color="primary" block outline (click)="_onNextPress()">Submit</button>
-  </div>
+            </ion-item>
+        </ion-list>
+        <div padding>
+          <button ion-button color="primary" block outline type="submit" [disabled]="!formGroup.valid">Submit</button>
+        </div>
+    </form>
+
 </ion-content>
+<style type="text/css">
+  .error{
+    font-size: small;
+    color:red;
+  }
+</style>
