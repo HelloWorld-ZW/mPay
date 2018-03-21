@@ -8,7 +8,7 @@ import { HelperProvider } from '../helper/helper';
 @Injectable()
 export class CommunicationProvider {
 
-  host:string = "http://192.168.1.9:8080/mPay_server/";
+  host:string = "http://192.168.1.2:8080/mPay_server/";
   headers: any;
   options: any;
 
@@ -138,10 +138,9 @@ export class CommunicationProvider {
   
 
   doAccountSignIn(email:string, password:string){
-    
     let url = this.host+"doAccountSignIn";
-    var hashPassword = this.cryptography.Sha1Hash(password).toString();
-    console.log(email);
+    var hashPassword = this.cryptography.Sha256Hash(password).toString();
+    //console.log("SHA256======= "+this.cryptography.Sha256Hash(password).toString());
     var loginData = JSON.stringify({
       'login_email': email,
       'login_password': hashPassword,
@@ -154,6 +153,23 @@ export class CommunicationProvider {
             let responseData = data;
             //this.helper.setToLocalStorage("logindata",data);
             resolve(responseData);            
+        },
+        err => {
+          alert(err);
+        });
+    });
+  }
+
+  getQrCodeDetail(transCode:string){
+    let url = this.host+"getQrCodeDetail";
+    var tCode = JSON.stringify({
+      'transCode': transCode
+    });
+
+    return new Promise(resolve => {
+      this.http.post(url, tCode, this.options)
+        .map(res => res.text()).subscribe(data => {
+            resolve(data);
         },
         err => {
           alert(err);

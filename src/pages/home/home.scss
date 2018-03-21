@@ -1,48 +1,75 @@
 page-home {
-    ion-navbar{
-        img {
-            border-radius: 50%;
-            width: 32px;
-            height: auto;
-            margin-right: 15px;
-        }
-    }
-
-    .content_cls{
+    
+       ion-navbar{
+           img {
+               border-radius: 50%;
+               width: 32px;
+               height: auto;
+               margin-right: 15px;
+           }
+       }
+       
+       .content_cls{
         background-color:color($colors, neutralLight1, base);
-    }
+        }
 
-    .icon-M{
-        font-size: 28px;
-    }
-    .icon-S{
-        font-size: 25px;
-    }
-    .label-M{
-        font-size: 13px;
-        color:color($colors, neutraldark3, base);
-    }
-    .label-M-white{
-        font-size: 13px;
-        color:color($colors, white, base);
-    }
-    .label-S{
-        font-size: 10px;
-    }
-    .content-center{
-        text-align: center;
-        width: 25%;
-    }
-    .toolbar-md {
-      min-height: 70px;
-    }
+       .span-balance{
+           font-size: 15px;
+           font-weight: normal;
+       }
+   
+       
+       .icon-M{
+           font-size: 28px;
+       }
+       .icon-S{
+           font-size: 25px;
+       }
+       .label-M{
+           font-size: 13px;
+           color:#222;
+       }
+       .label-M-white{
+           font-size: 13px;
+           color:#ffffff;
+       }
+       .label-S{
+           font-size: 10px;
+       }
+       .content-center{
+           text-align: center;
+           width: 25%;
+       }
+       .toolbar-md {
+         min-height: 70px;
+       }
+   
+       .background-primary{
+           background-color: #488aff;
+       }
+       .sub-header{
+           border-bottom:1px solid #e0e0e0;
+           background-color: white;
+       }
+   
+       .border-bottom{
+           border-bottom:4px solid #e0e0e0 !important;
+       }
+   
+       .padding-5{
+           padding-top: 2px;
+           padding-right: 5px;
+           padding-left: 5px;
+           padding-bottom: 2px;
+       }
+       .bg-blue{
+           background-color: #488aff;
+       }
+       .padding-5{
+           span{
+               color: #ffffff;
+               font-size: 12px;
+           }
+       }
+   }
 
-    .background-primary{
-        background-color:color($colors, primary, base);
-    }
-    .sub-header{
-        border-bottom:1px solid #e0e0e0;
-        background-color: white;
-    }
-
-}

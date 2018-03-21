@@ -10,6 +10,7 @@ import * as aesCorss from 'aes-cross';
 import * as buffer from 'buffer';
 import * as convertString from 'convert-string';
 import * as SHA1 from 'crypto-js/SHA1';
+import * as SHA256 from 'crypto-js/SHA256';
 import { HelperProvider } from '../helper/helper';
 
 
@@ -120,8 +121,13 @@ export class CryptographyProvider {
     var plaintext = aesCorss.decText(ciphertext,key,iv);
     return plaintext;
   }
+  
   Sha1Hash(data:string){
     return SHA1(data);
+  }
+  
+  Sha256Hash(data:string){
+    return SHA256(data);
   }
 
   // Do Decrypt and Encrypt operation here.

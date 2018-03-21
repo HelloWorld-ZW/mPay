@@ -7,8 +7,10 @@ import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
 import { LoginPage } from '../pages/login/login';
 import { LandingPage } from '../pages/landing/landing';
+import { CardsPage } from '../pages/cards/cards';
 import { CommunicationProvider } from '../providers/communication/communication';
 import { HelperProvider } from '../providers/helper/helper';
+
 
 @Component({
   templateUrl: 'app.html'

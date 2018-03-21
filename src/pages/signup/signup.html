@@ -1,15 +1,15 @@
 
-<ion-header>
+<ion-header padding-top>
 
   <ion-navbar color="primary">
-    <ion-title>Sign up for Hash Pay</ion-title>
+    <ion-title>Sign up</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-  
+  <ion-list>
   <ion-item>
     <ion-label>Account Type</ion-label>
     <ion-select [(ngModel)]="type" interface="popover" (ionChange)="onTypeChange($event)">
@@ -19,26 +19,31 @@
   </ion-item>
 
   <ion-item>
-    <ion-label floating><ion-icon [name]="nameIcon"></ion-icon>{{nameLabel}}</ion-label>
-    <ion-input clearInput type="text" value="" [(ngModel)]="fullname"></ion-input>
+    <ion-label fixed>{{nameLabel}}</ion-label>
+    <ion-input clearInput type="text" value="" [(ngModel)]="username" placeholder="Required"></ion-input>
   </ion-item>
 
   <ion-item>
-    <ion-label floating><ion-icon name="md-mail"></ion-icon> Email</ion-label>
-    <ion-input clearInput type="email" value="" [(ngModel)]="email"></ion-input>
+    <ion-label fixed>Email Add.</ion-label>
+    <ion-input clearInput type="email" value="" [(ngModel)]="email"  placeholder="Required" ></ion-input>
   </ion-item>
   
   <ion-item>
-      <ion-label floating><ion-icon name="md-call"></ion-icon> Phone</ion-label>
-      <ion-input clearInput type="number" pattern="[0-9]*" [(ngModel)]="phone" mask="+353 *********"></ion-input>
+      <ion-label fixed>Phone No.</ion-label>
+      <ion-input clearInput type="number" pattern="[0-9]*" [(ngModel)]="phone" mask="+353 *********" placeholder="Required"></ion-input>
   </ion-item>
 
   <ion-item>
-    <ion-label floating><ion-icon name="md-lock"> </ion-icon> Password</ion-label>
-    <ion-input clearInput type="password" value="" [(ngModel)]="password"></ion-input>
+    <ion-label fixed>Password</ion-label>
+    <ion-input clearInput type="password" value="" [(ngModel)]="password" placeholder="Required"></ion-input>
   </ion-item>
 
+  <ion-item>
+    <ion-label fixed>Re-type</ion-label>
+    <ion-input clearInput type="password" value="" [(ngModel)]="conf_password" placeholder="Required"></ion-input>
+  </ion-item>
+</ion-list>
   <div padding>
-    <button ion-button color="primary" block outline (click)="_onNextPress()">Next</button>
+    <button ion-button color="primary" block outline (click)="_onNextPress()">Submit</button>
   </div>
 </ion-content>

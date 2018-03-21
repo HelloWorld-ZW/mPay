@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, LoadingController, ToastController } from 'ionic-angular';
 import { TabsPage } from '../tabs/tabs';
-
+import { SignupPage } from '../signup/signup';
 import { CommunicationProvider } from '../../providers/communication/communication';
 import { CryptographyProvider } from '../../providers/cryptography/cryptography';
 
@@ -46,14 +46,14 @@ export class LoginPage {
 
     
     this.loader.dismiss();
-    }, 3000);
+    }, 1000);
     
   }
 
   doAccountLogin(){
     this.communication.doAccountSignIn(this.login_email,this.login_password).then(
       (result)=>{
-        //console.log(result);
+        console.log("Cipher from server:=="+result);
         if(result=="false"){
           let toast = this.toastCtrl.create({
             message: 'Wrong email address or password !',
@@ -65,10 +65,9 @@ export class LoginPage {
         else{
           //do decript
           var jsonSTR = this.cryptography.AESDecryption(result.toString());
-          console.log(jsonSTR);
+          //console.log(jsonSTR);
           this.navCtrl.setRoot(TabsPage, JSON.parse(jsonSTR));
         }
-        
       },
       (err)=>{
         console.log(err);
@@ -81,5 +80,9 @@ export class LoginPage {
       content:"Login..."
     });
     this.loader.present();
+  }
+
+  signup(){
+    this.navCtrl.push(SignupPage);
   }
 }

@@ -12,6 +12,9 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { LoginPage } from '../pages/login/login';
 import { LandingPage } from '../pages/landing/landing';
 import { SignupPage } from '../pages/signup/signup';
+import { CardsPage } from '../pages/cards/cards';
+import { AddcardPage } from '../pages/addcard/addcard';
+
 import { HandleSignupProvider } from '../providers/handle-signup/handle-signup';
 
 import { HttpModule } from '@angular/http';
@@ -20,6 +23,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { Device } from '@ionic-native/device';
 import { HelperProvider } from '../providers/helper/helper';
 import { CommunicationProvider } from '../providers/communication/communication';
+import { ZBar } from '@ionic-native/zbar';
 
 @NgModule({
   declarations: [
@@ -30,7 +34,9 @@ import { CommunicationProvider } from '../providers/communication/communication'
     TabsPage,
     LoginPage,
     LandingPage,
-    SignupPage
+    SignupPage,
+    CardsPage,
+    AddcardPage
   ],
   imports: [
     BrowserModule,
@@ -47,7 +53,9 @@ import { CommunicationProvider } from '../providers/communication/communication'
     TabsPage,
     LoginPage,
     LandingPage,
-    SignupPage
+    SignupPage,
+    CardsPage,
+    AddcardPage
   ],
   providers: [
     StatusBar,
@@ -57,6 +65,7 @@ import { CommunicationProvider } from '../providers/communication/communication'
     CryptographyProvider,
     HelperProvider,
     Device,
+    ZBar,
     CommunicationProvider
   ]
 })

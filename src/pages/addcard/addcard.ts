@@ -3,15 +3,18 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 
 @Component({
-  selector: 'page-friends',
-  templateUrl: 'friends.html',
+  selector: 'page-addcard',
+  templateUrl: 'addcard.html',
 })
-export class FriendsPage {
+export class AddcardPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
+
   ionViewDidLoad() {
-    console.log('ionViewDidLoad FriendsPage');
+    //console.log('ionViewDidLoad AddcardPage');
   }
+
+  
 
 }

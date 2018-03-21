@@ -1,0 +1,34 @@
+
+<ion-header padding-top>
+  
+    <ion-navbar color="primary" padding-top>
+      <ion-title>My Cards</ion-title>
+  
+      <ion-buttons end>
+        <button end clear ion-button (click)="addCard()">
+          Add
+        </button>
+      </ion-buttons>
+    </ion-navbar>
+</ion-header>
+  
+  
+  <ion-content padding-bottom class="card-background-page">
+  
+    <ion-card (click)="presentActionSheet()">
+        <img src="assets/card-bg/aib.jpg"/>
+        <div class="card-title">**** **** **** 1234</div>
+    </ion-card>
+  
+    <ion-card>
+        <img src="assets/card-bg/aib.jpg"/>
+        <div class="card-subtitle">41 Listings</div>
+    </ion-card>
+  
+    <ion-card>
+        <img src="assets/card-bg/aib.jpg"/>
+        <div class="card-subtitle">41 Listings</div>
+    </ion-card>
+  
+  </ion-content>
+  

@@ -12,13 +12,13 @@ import { CommunicationProvider } from '../../providers/communication/communicati
 })
 export class SignupPage {
 
-  nameLabel:any=" Full name";
-  nameIcon:any="md-person";
+  nameLabel:any="Username";
 
-  fullname:string;
+  username:string;
   email:string;
   phone:string;
   password:string;
+  conf_password:string;
   type:string="personal";
 
 
@@ -33,41 +33,22 @@ export class SignupPage {
     console.log('ionViewDidLoad SignupPage');
   }
 
-  _onNextPress(){
-    //alert(this.fullname+"\n"+this.email+"\n"+this.phone+"\n"+this.password);
-    //alert("TODO: Send email verification code");
-
-    //alert(this.signupProvider.doAccountSignUp(this.email, this.fullname, this.phone, this.password, this.type));
-    
-    
-    //this.signupReturns(); //DO NOT Delete
-
-    //this.cryptographyProvider.getPbk();
-
-    //this.communication.doAccountSignUp(this.email, this.fullname, this.phone, this.password, this.type);
-    
-    //var iv = this.cryptographyProvider.AESEncryption("a");
-    
-    //console.log(iv);
-    //this.cryptographyProvider.sentSymmetricKeyToServer();
-
+  submitSignUp(){
+    //DO submit signup 
   }
 
   async signupReturns(){
-    const info = await this.signupProvider.doAccountSignUp(this.email, this.fullname, this.phone, this.password, this.type).then(data=>{return data;});
-    console.log(info);
-    alert(info['status']);
+    //const info = await this.signupProvider.doAccountSignUp(this.email, this.fullname, this.phone, this.password, this.type).then(data=>{return data;});
+    //console.log(info);
+    //alert(info['status']);
   }
 
   onTypeChange(selectedValue: any){
-    
     if(selectedValue=="business"){
-      this.nameLabel = " Business Name";
-      this.nameIcon = "ios-stats";
+      this.nameLabel = "Busin.Name";
     }
     else{
-      this.nameLabel = " Full Name";
-      this.nameIcon = "md-person";
+      this.nameLabel = "Username";
     }
   }
 }

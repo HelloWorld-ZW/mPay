@@ -1,24 +1,22 @@
-
-
-
-
 <ion-split-pane>
-<ion-header>
+<ion-header padding-top>
   <ion-navbar color="primary" padding-top padding-left padding-right> 
     <button ion-button menuToggle>
       <img src="http://chronicle.com/blogs/profhacker/files/2013/04/Professortocat_v2-300x300.png" />
     </button>
     <ion-title>{{username}}</ion-title>
   </ion-navbar>
+  
   <div class="background-primary">
     <ion-grid>
       <ion-row>
 
         <ion-col class="content-center">
           <ion-buttons>
-          <button clear ion-button>
+          <button clear ion-button (click)="_scan()">
             <div>
-              <ion-icon name="md-expand" class="icon-M" color="white"></ion-icon>
+              <ion-icon name="md-expand" class="icon-M" 
+                color="white"></ion-icon>
               <br>
               <label class="label-M-white">Scan & Pay</label>
             </div>
@@ -28,9 +26,10 @@
 
         <ion-col class="content-center">
           <ion-buttons>
-          <button clear ion-button>
+          <button clear ion-button (click)="_paymentConfirmation()">
             <div>
-              <ion-icon name='md-exit' class="icon-M" color="white"></ion-icon>
+              <ion-icon name='md-exit' class="icon-M" 
+                color="white"></ion-icon>
               <br>
               <label class="label-M-white">Transfer</label>
             </div>
@@ -42,7 +41,8 @@
           <ion-buttons>
           <button clear ion-button (click)="openPage(0)">
             <div>
-              <ion-icon name='md-card' class="icon-M" color="white"></ion-icon>
+              <ion-icon name='md-card' class="icon-M" 
+                color="white"></ion-icon>
               <br>
               <label class="label-M-white">Cards</label>
             </div>
@@ -114,8 +114,27 @@
 </ion-header>
   
   
-<ion-content class="content_cls">
-
+<ion-content class="content_cls" fullscreen>
+  <div class="border-bottom"></div>
+  
+  
+  
+        <div class="padding-5 bg-blue">
+          <span>Transactions</span>
+        </div>
+  
+        <div [ngSwitch]="section">
+          <ion-list>
+            <ion-item *ngFor="let something of somethings" (click)="itemPress()">
+              <ion-avatar item-start>
+                <img src="https://gordon-beeming.gallerycdn.vsassets.io/extensions/gordon-beeming/github/0.10.0/1474455219937/img/logo.png">
+              </ion-avatar>
+              <h2>Woody</h2>
+              <p>Sent</p>
+              <p item-end>$102.99<br>10/09/17</p>
+            </ion-item>
+          </ion-list> 
+        </div>
 </ion-content>
-
+  
 </ion-split-pane>

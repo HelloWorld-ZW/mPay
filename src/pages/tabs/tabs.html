@@ -2,8 +2,8 @@
     <ion-header padding-top>
       <div padding text-center>
         <img src="http://chronicle.com/blogs/profhacker/files/2013/04/Professortocat_v2-300x300.png"/>
-        <h6>User Name</h6>
-        <span>Balance: $999.00</span>
+        <h6>{{username}}</h6>
+        <span>Balance: {{balance}} EUR</span>
       </div>
     </ion-header>
   
@@ -62,7 +62,7 @@
             
     <ion-footer >
             <div class="border_bottom_top">
-                <button ion-button full color="danger" clear icon-right style="font-weight:bold">
+                <button ion-button full color="danger" clear icon-right style="font-weight:bold" (click)="_logout()">
                     Logout 
                     <ion-icon name="md-log-out"></ion-icon>
                 </button>

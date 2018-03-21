@@ -1,25 +1,36 @@
-<ion-header>
-	<ion-navbar color="primary">
-		<ion-title>Sing in</ion-title>
-	</ion-navbar>
-</ion-header>
 
-
-<ion-content padding>
-
-
+<ion-content class="login-content" padding>
+	<ion-row class="logo-row">
+	  <ion-col></ion-col>
+	  <ion-col width-67>
+		<img src="assets/imgs/square_2.jpg"/>
+	  </ion-col>
+	  <ion-col></ion-col>
+	</ion-row>
+	<div class="login-box">
 	<ion-item>
-		<ion-label floating>Email</ion-label>
-		<ion-input type="text" [(ngModel)]="login_email"></ion-input>
+		<ion-label stacked>Email</ion-label>
+		<ion-input type="text" 
+			[(ngModel)]="login_email"></ion-input>
 	</ion-item>
 
 	<ion-item>
-		<ion-label floating>Password</ion-label>
-		<ion-input type="password" [(ngModel)]="login_password"></ion-input>
+		<ion-label stacked>Password</ion-label>
+		<ion-input type="password" 
+			[(ngModel)]="login_password"></ion-input>
 	</ion-item>
+	<a style="float: right; text-decoration: none;" 
+		href="#">Forgot Password?</a>
+	<br/>
 
-
-	<div padding>
-		<button ion-button color="primary" block (click)="_onLoginPress()">Sign In</button>
+	<div padding style="text-align: center; ">
+		<button ion-button color="primary" 
+			block (click)="_onLoginPress()">Sign in</button>
+		<br/>
+		<a style="text-decoration: none;" 
+			nohref="" (click)="signup()">
+			Create an account </a>
+		
 	</div>
+</div>
 </ion-content>
