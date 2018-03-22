@@ -5,6 +5,8 @@ import { HandleSignupProvider } from '../../providers/handle-signup/handle-signu
 
 import { CryptographyProvider } from '../../providers/cryptography/cryptography';
 import { CommunicationProvider } from '../../providers/communication/communication';
+import { ServicesProvider } from '../../providers/services/services';
+
 
 @Component({
   selector: 'page-signup',
@@ -30,17 +32,18 @@ export class SignupPage {
   //   type:'personal'
   // };
 
-
   private formGroup : FormGroup;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, 
     public signupProvider:HandleSignupProvider, public cryptographyProvider:CryptographyProvider,
-    public communication:CommunicationProvider, public formBuilder: FormBuilder) {
+    public communication:CommunicationProvider, public formBuilder: FormBuilder,
+    public services:ServicesProvider) {
+
 
       this.formGroup = this.formBuilder.group({
         username:['', Validators.compose([Validators.required, Validators.pattern('^(?:[A-Za-z]+)(?:[A-Za-z0-9 ]*)$')])],
         email: ['', Validators.compose([Validators.maxLength(70), Validators.pattern('^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$'), Validators.required])],
-        phone:['', Validators.required],
+        phone:['',  Validators.compose([Validators.required, Validators.minLength(10),Validators.maxLength(10), Validators.pattern('08([0-9]{8,8})')])],
 
         password: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$')])),
         //Minimum eight characters, at least one uppercase letter, one lowercase letter, one number:
@@ -50,7 +53,7 @@ export class SignupPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad SignupPage');
+    // on view load
   }
 
   equalto(field_name): ValidatorFn {
@@ -67,7 +70,16 @@ export class SignupPage {
   }
 
   submitSignUp(){
-    console.log(this.formGroup.value);
+    var signupData = this.formGroup.value;
+    var passworh_hash = this.cryptographyProvider.Sha256Hash(this.formGroup.value.password);
+    signupData.password = passworh_hash.toString();
+    delete signupData['re_password'];
+
+    var AES_Cipher = this.cryptographyProvider.AESEnc(JSON.stringify(signupData));
+//mpay/device
+    //this.services.doPOST("mpay/device/create_update",AES_Cipher);
+    console.log(AES_Cipher);
+    
   }
 
   async signupReturns(){

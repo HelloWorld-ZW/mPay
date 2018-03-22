@@ -8,7 +8,7 @@ import { HelperProvider } from '../helper/helper';
 @Injectable()
 export class CommunicationProvider {
 
-  host:string = "http://172.21.2.246:8080/mPay_server/";
+  host:string = "http://172.21.2.79:8080/mPay_server/";
   headers: any;
   options: any;
 
@@ -184,6 +184,6 @@ export class CommunicationProvider {
   }
 
   doGET(link:string){
-    
+
   }
 }

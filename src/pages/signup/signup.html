@@ -30,8 +30,8 @@
             </ion-item>
             
             <ion-item>
-                <ion-label fixed>Phone No.</ion-label>
-                <ion-input clearInput type="number" formControlName="phone" name="phone" placeholder="required"></ion-input>
+                <ion-label fixed>Mobile No.</ion-label> <!--[brmasker]="{mask:'000 0000000', len:11, type:num}"-->
+                <ion-input clearInput type="tel"  formControlName="phone"  name="phone" placeholder="required"></ion-input>
             </ion-item>
         
             <ion-item>
@@ -40,13 +40,14 @@
             </ion-item>
         
             <ion-item>
-              <ion-label fixed>Re-type</ion-label>
+              <ion-label fixed>Confirm</ion-label>
               <ion-input clearInput type="password" formControlName="re_password" name="repassword" placeholder="required"></ion-input>
             </ion-item>
             <ion-item no-lines *ngIf="formGroup.get('re_password').hasError('equalTo') 
                                   || formGroup.get('email').hasError('pattern')
                                   || formGroup.get('password').hasError('pattern')
-                                  || formGroup.get('username').hasError('pattern')">
+                                  || formGroup.get('username').hasError('pattern')
+                                  || formGroup.get('phone').hasError('pattern')">
                 <div class="error" *ngIf="formGroup.get('re_password').hasError('equalTo') ">
                   Password mismatch
                 </div>
@@ -59,7 +60,13 @@
                   No Special character allowed
                 </div>
 
+                <div class="error" *ngIf="formGroup.get('phone').hasError('pattern')">
+                    Incorrect Mobile No.<br/>
+                    - e.g. 0871234567
+                  </div>
+
                 <div class="error" *ngIf="formGroup.get('password').hasError('pattern')">
+                    Password Must have at least: <br/>
                     - 8 characters long<br/>
                     - 1 uppercase & 1 lowercase letter<br/>
                     - 1 number
@@ -68,7 +75,7 @@
             </ion-item>
         </ion-list>
         <div padding>
-          <button ion-button color="primary" block outline type="submit" [disabled]="!formGroup.valid">Submit</button>
+          <button ion-button color="primary" block type="submit" [disabled]="!formGroup.valid">Submit</button>
         </div>
     </form>
 

@@ -135,4 +135,40 @@ export class HelperProvider {
 
 
   // Do help functions here
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  async getStorageData(key:string){
+    return await this.storage.get(key).then((val)=>{
+        //this.localStorageVal = val;
+        return val;
+        //console.log("helper: "+val);
+      });
+
+    // console.log("helper: "+this.localStorageVal);
+    // return this.localStorageVal;
+    
+  }
+
+  setStorageData(key:string, data:any){
+    this.storage.set(key,data);
+  }
+
+  getDeviceInfo(){
+    return JSON.stringify({
+        "uuid": this.device.uuid,
+        "platform":this.device.platform,
+        "manufacturer":this.device.manufacturer,
+        "model":this.device.model
+    });
+  }
+
+  generateSessionKey(){
+    return JSON.stringify({
+      key:this.genRandString(),
+      iv:this.genRandString()
+    });
+  }
+
+
 }

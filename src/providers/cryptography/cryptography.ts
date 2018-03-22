@@ -24,6 +24,11 @@ export class CryptographyProvider {
   publicKey:any;
   symmertricKey:any;
 
+  //new
+  pbkValue:any;
+  sessionKeyVal:any;
+  sessionIvVal:any;
+
   constructor(public http: Http,
     private storage:Storage,
     private device:Device,
@@ -31,7 +36,11 @@ export class CryptographyProvider {
   ) {
     
       this.getKeysFromLocal('serverPublicKey');
-      
+
+      this.pbkValue = this.helper.getStorageData("ServerPBK");
+      this.sessionKeyVal = this.helper.getStorageData("sessKey");
+      this.sessionIvVal = this.helper.getStorageData("sessIv");
+
       setTimeout(()=>{
         this.getKeysFromLocal('symmetricKey');
       },3000);
@@ -128,6 +137,31 @@ export class CryptographyProvider {
   
   Sha256Hash(data:string){
     return SHA256(data);
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  RSAEnc(plain:string){
+    var publicKey = this.pbkValue.__zone_symbol__value;
+    var key=new nodeRSA();  
+    key.setOptions({encryptionScheme: 'pkcs1'}) 
+    var keyData = '-----BEGIN PUBLIC KEY-----' +publicKey+ '-----END PUBLIC KEY-----';
+    key.importKey(keyData, 'pkcs8-public');
+    
+    var cipher = key.encrypt(plain,'base64');
+    return cipher;
+  }
+
+  AESEnc(plain:string){
+    var buffer_key = new buffer.Buffer(convertString.stringToBytes(this.sessionKeyVal.__zone_symbol__value));
+    var buffer_iv = new buffer.Buffer(convertString.stringToBytes(this.sessionIvVal.__zone_symbol__value));
+    return aesCorss.encText(plain,buffer_key,buffer_iv);
+  }
+
+  AESDec(cipher:string){
+    var buffer_key = new buffer.Buffer(convertString.stringToBytes(this.sessionKeyVal.__zone_symbol__value));
+    var buffer_iv = new buffer.Buffer(convertString.stringToBytes(this.sessionIvVal.__zone_symbol__value));
+    return aesCorss.decText(cipher,buffer_key,buffer_iv);
   }
 
   // Do Decrypt and Encrypt operation here.

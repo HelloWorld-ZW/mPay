@@ -24,6 +24,8 @@ import { Device } from '@ionic-native/device';
 import { HelperProvider } from '../providers/helper/helper';
 import { CommunicationProvider } from '../providers/communication/communication';
 import { ZBar } from '@ionic-native/zbar';
+import { ServicesProvider } from '../providers/services/services';
+//import { BrMaskerModule } from 'brmasker-ionic-3';
 
 @NgModule({
   declarations: [
@@ -42,6 +44,7 @@ import { ZBar } from '@ionic-native/zbar';
     BrowserModule,
     IonicModule.forRoot(mPay),
     HttpModule,
+    //BrMaskerModule,
     IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
@@ -66,7 +69,8 @@ import { ZBar } from '@ionic-native/zbar';
     HelperProvider,
     Device,
     ZBar,
-    CommunicationProvider
+    CommunicationProvider,
+    ServicesProvider
   ]
 })
 export class AppModule {}
