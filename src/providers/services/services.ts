@@ -8,7 +8,7 @@ import { HelperProvider } from '../helper/helper';
 @Injectable()
 export class ServicesProvider {
 
-  private HOST_URL:string = "http://172.20.10.6:8080/mPay_service1/webresources/";
+  private HOST_URL:string = "http://192.168.1.2:8080/mPay_service1/webresources/";
   private headers: any;
   private options: any;
 
@@ -32,6 +32,18 @@ export class ServicesProvider {
     });
   }
 
+  getIpAddress(){
+    return new Promise(resolve => {
+      this.http.get("http://ipv4.myexternalip.com/json").map(res => res.json())
+        .subscribe(data => {
+          resolve(data.ip);            
+        },
+        err => {
+          alert(err);
+        });
+    });
+  }
+
   doPOST(path:string, cipher:string){
     console.log("doPOST_==== "+cipher);
     return new Promise(resolve => {
@@ -48,7 +60,15 @@ export class ServicesProvider {
   }
 
   doGET(path:string){
-
+    return new Promise(resolve => {
+      this.http.get(path)
+        .subscribe(data => {
+          resolve(data);            
+        },
+        err => {
+          alert(err);
+        });
+    });
   }
 
   test(){

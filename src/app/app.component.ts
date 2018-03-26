@@ -32,7 +32,7 @@ export class mPay {
       statusBar.styleDefault();
       splashScreen.hide();
       
-      this.communication.getPbkFromServer();////////////////////////
+      // this.communication.getPbkFromServer();////////////////////////
       try {
         //get server pbk and save to local storage
         this.services.getServerPBK();
@@ -66,7 +66,8 @@ export class mPay {
       setTimeout( ()=>{ 
         this.services.test();
          //this.helper.EncAndPostDeviceInfoAndSymmetricKey();
-        this.communication.postDeviceInfoAndSymmetricKey();
+
+        //this.communication.postDeviceInfoAndSymmetricKey();
       }, 500);
      
     });

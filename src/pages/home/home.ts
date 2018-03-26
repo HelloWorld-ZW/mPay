@@ -4,6 +4,9 @@ import { ZBar,ZBarOptions  } from '@ionic-native/zbar';
 import { LoadingController, AlertController } from 'ionic-angular';
 import { CommunicationProvider } from '../../providers/communication/communication';
 import { CardsPage } from '../cards/cards';
+import { ServicesProvider } from '../../providers/services/services';
+import { CryptographyProvider } from '../../providers/cryptography/cryptography';
+import { HelperProvider } from '../../providers/helper/helper';
 
 
 @Component({
@@ -14,6 +17,8 @@ export class HomePage {
 
   username:string;
   email:string;
+  ipAddress:string;
+
   somethings: any = new Array(10);
   pages:any = [CardsPage];
 
@@ -22,11 +27,20 @@ export class HomePage {
     private zbar: ZBar,
     public loading: LoadingController,
     public communication: CommunicationProvider,
-    private alertCtrl: AlertController) {
+    private alertCtrl: AlertController,
+    public services: ServicesProvider,
+    public crypto: CryptographyProvider,
+    public helper: HelperProvider) {
     
       //console.log(navParams.data);
     this.username = navParams.get("username");
     this.email = navParams.get("email");
+
+    
+    this.logHistory();
+    //post login history
+    //load transaction histor
+
   }
 
   _scan(){
@@ -96,6 +110,23 @@ export class HomePage {
 
   openPage(index){
     this.navCtrl.push(this.pages[index]);
+  }
+
+  async logHistory(){
+    let myIp = await this.services.getIpAddress().then(data=>{return data;});
+
+    let logInfoCipher = JSON.stringify({
+      "uuid":this.crypto.RSAEnc(JSON.parse(this.helper.getDeviceInfo()).uuid+""),
+      "data":this.crypto.AESEnc(JSON.stringify({
+        "email":this.email,
+        "datetime": new Date(),
+        "ip":myIp
+      }))
+    });
+
+    //TODO: POST to server
+
+    console.log(logInfoCipher);
   }
 
 }
