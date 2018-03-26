@@ -4,6 +4,8 @@ import { TabsPage } from '../tabs/tabs';
 import { SignupPage } from '../signup/signup';
 import { CommunicationProvider } from '../../providers/communication/communication';
 import { CryptographyProvider } from '../../providers/cryptography/cryptography';
+import { HelperProvider } from '../../providers/helper/helper';
+import { ServicesProvider } from '../../providers/services/services';
 
 @Component({
   selector: 'page-login',
@@ -22,8 +24,9 @@ export class LoginPage {
     public loadingCtrl:LoadingController,
     public communication:CommunicationProvider,
     public toastCtrl: ToastController,
-    public cryptography:CryptographyProvider
-  ) {
+    public cryptography:CryptographyProvider,
+    public helper: HelperProvider,
+    public services: ServicesProvider) {
 
     setInterval(()=>{
       //alert("hello");
@@ -35,52 +38,49 @@ export class LoginPage {
     //console.log('ionViewDidLoad LoginPage');
   }
 
-  _onLoginPress(){
-    this.presentLoading();
-    //console.log(this.login_email, this.login_password);
-    setTimeout( ()=>{
-    
-    this.doAccountLogin();
+  /////////////////////////////////////////////////////////////
 
-    //var a = this.communication.doAccountSignIn(this.login_email,this.login_password);
+  submitLogin(){
+    var loginCipher = this.cryptography.AESEnc(JSON.stringify({
+      "email": this.login_email,
+      "password": this.cryptography.Sha256Hash(this.login_password).toString()
+    }));
+    var uuid_cipher = this.cryptography.RSAEnc(JSON.parse(this.helper.getDeviceInfo()).uuid+"");
 
-    
-    this.loader.dismiss();
-    }, 1000);
-    
-  }
-
-  doAccountLogin(){
-    this.communication.doAccountSignIn(this.login_email,this.login_password).then(
-      (result)=>{
-        console.log("Cipher from server:=="+result);
-        if(result=="false"){
-          let toast = this.toastCtrl.create({
-            message: 'Wrong email address or password !',
-            duration: 3000,
-            position: 'top'
-          });
-          toast.present(toast);
-        }
-        else{
-          //do decript
-          var jsonSTR = this.cryptography.AESDecryption(result.toString());
-          //console.log(jsonSTR);
-          this.navCtrl.setRoot(TabsPage, JSON.parse(jsonSTR));
-        }
-      },
-      (err)=>{
-        console.log(err);
-      });
-  }
-
-  presentLoading(){
-    this.loader = this.loadingCtrl.create({
-      spinner: 'bubbles',
-      content:"Login..."
+    var uuid_login_cipher = JSON.stringify({
+      "uuid": uuid_cipher,
+      "data": loginCipher
     });
-    this.loader.present();
+    
+    this.loginReturn(uuid_login_cipher);
+    console.log(uuid_login_cipher);
   }
+
+  async loginReturn(cipher:any){
+    let loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    });
+    loading.present();
+    let response = await this.services.doPOST("mpay/account/signin",cipher).then(data=>{return data;});
+    loading.dismiss();
+
+    let responseJson = JSON.parse(response.toString());
+
+    if(responseJson.response==1){
+      //nav to home page
+      this.navCtrl.setRoot(TabsPage, JSON.parse(this.cryptography.AESDec(responseJson.accountInfo)));
+      console.log(this.cryptography.AESDec(responseJson.accountInfo));
+    }
+    else{
+      let toast = this.toastCtrl.create({
+        message: responseJson.response,
+        duration: 3000,
+        position: 'top'
+      });
+      toast.present(toast);
+    }
+  }
+
 
   signup(){
     this.navCtrl.push(SignupPage);

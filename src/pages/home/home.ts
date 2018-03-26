@@ -13,7 +13,7 @@ import { CardsPage } from '../cards/cards';
 export class HomePage {
 
   username:string;
-
+  email:string;
   somethings: any = new Array(10);
   pages:any = [CardsPage];
 
@@ -23,8 +23,10 @@ export class HomePage {
     public loading: LoadingController,
     public communication: CommunicationProvider,
     private alertCtrl: AlertController) {
-    //console.log(navParams.data);
+    
+      //console.log(navParams.data);
     this.username = navParams.get("username");
+    this.email = navParams.get("email");
   }
 
   _scan(){
