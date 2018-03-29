@@ -8,7 +8,7 @@ import { HelperProvider } from '../helper/helper';
 @Injectable()
 export class ServicesProvider {
 
-  private HOST_URL:string = "http://192.168.1.2:8080/mPay_service1/webresources/";
+  private HOST_URL:string = "http://172.21.1.113:8080/mPay_service1/webresources/";
   private headers: any;
   private options: any;
 
@@ -69,6 +69,10 @@ export class ServicesProvider {
           alert(err);
         });
     });
+  }
+  
+  doPUT(path:string,cipher:string){
+    this.http.put(this.HOST_URL+path, cipher).map(res => res.json());
   }
 
   test(){

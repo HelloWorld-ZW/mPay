@@ -19,7 +19,7 @@ export class HomePage {
   email:string;
   ipAddress:string;
 
-  somethings: any = new Array(10);
+  transactions: any=new Array();
   pages:any = [CardsPage];
 
   constructor(public navCtrl: NavController, 
@@ -38,10 +38,22 @@ export class HomePage {
 
     
     this.logHistory();
-    //post login history
+    this.helper.setStorageData("loggedIn",this.email); //save logged in email locally
+
+    
+    for(var i=0; i<20; i++){
+      let obj = {
+        "name": "Zhen",
+        "Date": "01/01/2018",
+        "transType": "Pay"
+      };
+      this.transactions.push(obj);
+    }
+    
     //load transaction histor
 
   }
+  //constructor END
 
   _scan(){
     let loader = this.loading.create({
@@ -81,6 +93,9 @@ export class HomePage {
       alert(error); // Error message
     });
   }
+  // _scan END
+
+  
   _paymentConfirmation(){
     console.log("hello");
     // let transDataJSON = JSON.parse(transData);
@@ -107,10 +122,12 @@ export class HomePage {
     });
     confirmAlert.present();
   }
+  //_paymentConfirmation END
 
   openPage(index){
     this.navCtrl.push(this.pages[index]);
   }
+  //openPage END
 
   async logHistory(){
     let myIp = await this.services.getIpAddress().then(data=>{return data;});
@@ -119,14 +136,29 @@ export class HomePage {
       "uuid":this.crypto.RSAEnc(JSON.parse(this.helper.getDeviceInfo()).uuid+""),
       "data":this.crypto.AESEnc(JSON.stringify({
         "email":this.email,
-        "datetime": new Date(),
+        "datetime": new Date().getTime(),
         "ip":myIp
       }))
     });
 
-    //TODO: POST to server
+    await this.services.doPOST("mpay/account/recordHistory",logInfoCipher);
+    //log history
 
     console.log(logInfoCipher);
+  }
+  //logHistory END
+
+  doInfinite(infiniteScroll) {
+    console.log('Begin async operation');
+
+    setTimeout(() => {
+      for (let i = 0; i < 30; i++) {
+        this.transactions.push( this.transactions.length );
+      }
+
+      console.log('Async operation has ended');
+      infiniteScroll.complete();
+    }, 500);
   }
 
 }

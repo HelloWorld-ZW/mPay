@@ -11,24 +11,24 @@ import { Storage } from '@ionic/storage';
 @Injectable()
 export class HelperProvider {
 
-  localStorageVal : any;
+  localStorageVal: any;
 
 
-  constructor(public http: Http, 
-    private device:Device,
-    private storage:Storage,
+  constructor(public http: Http,
+    private device: Device,
+    private storage: Storage,
     //private cryptography: CryptographyProvider,
     //private communication: CommunicationProvider
   ) {
     console.log('Hello HelperProvider Provider');
   }
 
-  
 
-  genRandString(){
+
+  genRandString() {
     return randomString.generate({
-      length:16,
-      charset:'alphanumeric'
+      length: 16,
+      charset: 'alphanumeric'
     });
   }
 
@@ -87,39 +87,39 @@ export class HelperProvider {
 
   /////////////////////////////////////////
 
-  getDeviceUUID(){
+  getDeviceUUID() {
     return this.device.uuid;
   }
 
-  getDeviceInfoAndGenerateKeys(){
-    
+  getDeviceInfoAndGenerateKeys() {
+
     var key = this.genRandString();
     var iv = this.genRandString();
     var symmetricKey = JSON.stringify({
-      "key":key,
-      "iv":iv
+      "key": key,
+      "iv": iv
     });
 
     this.storage.set("symmetricKey", symmetricKey);
-    
-    var data=JSON.stringify({
+
+    var data = JSON.stringify({
       "uuid": this.device.uuid,
-      "platform":this.device.platform,
-      "manufacturer":this.device.manufacturer,
-      "model":this.device.model,
-      "key":key,
-      "iv":iv
+      "platform": this.device.platform,
+      "manufacturer": this.device.manufacturer,
+      "model": this.device.model,
+      "key": key,
+      "iv": iv
     });
 
     return data;
   }
 
-  getFromLocalStroage(key:string){
+  getFromLocalStroage(key: string) {
     return this.storage.get(key);
   }
 
-  setToLocalStorage(key:string, data:any){
-    this.storage.set(key,data);
+  setToLocalStorage(key: string, data: any) {
+    this.storage.set(key, data);
   }
 
 
@@ -128,7 +128,7 @@ export class HelperProvider {
   //   var data = JSON.stringify({
   //     "cipher": cipher
   //   });
-    
+
   //   console.log(data);
   //   //this.communication.postDeviceInfoAndSymmetricKeys(data);
   // }
@@ -138,36 +138,66 @@ export class HelperProvider {
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  async getStorageData(key:string){
-    return await this.storage.get(key).then((val)=>{
-        //this.localStorageVal = val;
-        return val;
-        //console.log("helper: "+val);
-      });
+  async getStorageData(key: string) {
+    return await this.storage.get(key).then((val) => {
+      //this.localStorageVal = val;
+      return val;
+      //console.log("helper: "+val);
+    });
 
     // console.log("helper: "+this.localStorageVal);
     // return this.localStorageVal;
-    
+
   }
 
-  setStorageData(key:string, data:any){
-    this.storage.set(key,data);
+  setStorageData(key: string, data: any) {
+    this.storage.set(key, data);
   }
 
-  getDeviceInfo(){
+  getDeviceInfo() {
     return JSON.stringify({
-        "uuid": this.device.uuid,
-        "platform":this.device.platform,
-        "manufacturer":this.device.manufacturer,
-        "model":this.device.model
+      "uuid": this.device.uuid,
+      "platform": this.device.platform,
+      "manufacturer": this.device.manufacturer,
+      "model": this.device.model
     });
   }
 
-  generateSessionKey(){
+  generateSessionKey() {
     return JSON.stringify({
-      key:this.genRandString(),
-      iv:this.genRandString()
+      key: this.genRandString(),
+      iv: this.genRandString()
     });
+  }
+
+  cardValidate(card: string) {
+    var drop_last_digit = card.replace(/\s/g, '').slice(0, -1);
+    var reverse_digit = this.reverseString(drop_last_digit);
+    var digits_array = reverse_digit.split("");
+    var sum_digits = 0;
+
+    digits_array.forEach((digit, index) => {
+      if ((index + 1) % 2 != 0) {
+        digit = (parseInt(digit) * 2).toString();
+      }
+      if (parseInt(digit) > 9) {
+        digit = (parseInt(digit) - 9).toString();
+      }
+      sum_digits += parseInt(digit);
+    })
+    if ((10-(sum_digits % 10)) == parseInt(card.slice(-1))) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  reverseString(str: string) {
+    var splitString = str.split("");
+    var reverseArray = splitString.reverse();
+    var reverseStr = reverseArray.join("");
+    return reverseStr;
   }
 
 

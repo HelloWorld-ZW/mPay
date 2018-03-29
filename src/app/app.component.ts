@@ -17,7 +17,7 @@ import { CryptographyProvider } from '../providers/cryptography/cryptography';
   templateUrl: 'app.html'
 })
 export class mPay {
-  rootPage:any = LoginPage;
+  rootPage:any =LoginPage; //CardsPage; //
 
   constructor(platform: Platform, statusBar: StatusBar, 
     splashScreen: SplashScreen, 

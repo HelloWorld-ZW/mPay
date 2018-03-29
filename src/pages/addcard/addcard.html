@@ -1,8 +1,7 @@
-
 <ion-header padding-top>
 
   <ion-navbar color="primary" padding-top>
-    
+    <ion-title>Add New Card</ion-title>
     <ion-buttons end>
       <button end clear ion-button (click)="opencamera()">
         <ion-icon name="camera"></ion-icon>
@@ -13,6 +12,56 @@
 </ion-header>
 
 
-<ion-content padding>
+<ion-content class="content">
+  <p padding-left>Please enter card detials</p>
+  <div padding-left>
+    <ion-img width="40" height="25" src="{{visa_img}}"></ion-img>
+    <!-- <ion-img width="40" height="25" src="{{visa_debit_img}}"></ion-img> -->
+    <ion-img width="40" height="25" src="{{master_img}}"></ion-img>
+  </div>
 
+  <form [formGroup]="cardForm" (ngSubmit)="submitCardForm()">
+
+    <ion-list>
+
+      <ion-item>
+        <ion-label fixed>Card No.</ion-label>
+        <ion-input type="tel" formControlName="cardNum" placeholder="0000 0000 0000 0000" [brmasker]="{mask:'0000 0000 0000 0000', len:19}"
+          (input)="onCardNumChange($event.target.value)"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label fixed>Holder</ion-label>
+        <ion-input type="text" formControlName="holder" placeholder="John Doe"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label fixed>Expiry Date</ion-label>
+        <ion-datetime displayFormat="MM/YYYY" min="{{minYear}}" max="{{maxYear}}" placeholder="03/2020" formControlName="expiry"></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label fixed>CVV</ion-label>
+        <ion-input type="tel" formControlName="cvv" placeholder="000" [brmasker]="{mask:'000', len:3}"></ion-input>
+      </ion-item>
+    </ion-list>
+
+    <div padding-left>
+      <div class="error" *ngIf="cardForm.get('holder').hasError('pattern') ">
+        No digit or special character allowed
+      </div>
+    </div>
+
+    <div padding-left padding-right>
+      <button ion-button block type="submit" [disabled]="!cardForm.valid">Submit</button>
+    </div>
+  </form>
 </ion-content>
+
+
+<style type="text/css">
+  .error {
+    font-size: small;
+    color: red;
+  }
+</style>
