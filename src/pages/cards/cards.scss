@@ -3,13 +3,17 @@ page-cards {
 
 	  ion-card {
 	    position: relative;
-	    text-align: center;
+			text-align: center;
+			border-radius: 0.5em;
+			margin-bottom: 0;
+			margin-top: 0;
 	  }
 
 	  .card-title {
 	    position: absolute;
 	    top: 36%;
-	    font-size: 1.5em;
+			font-size: 1.6em;
+			font-family: Courier New;
 	    width: 100%;
 	    font-weight: bold;
 	    color: #fff;
@@ -21,7 +25,7 @@ page-cards {
 	    top: 52%;
 	    width: 100%;
 	    color: #fff;
-	  }
+		}
 
 	}
 }

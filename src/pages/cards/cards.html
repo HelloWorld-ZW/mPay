@@ -1,34 +1,48 @@
-
 <ion-header padding-top>
-  
-    <ion-navbar color="primary" padding-top>
-      <ion-title>My Cards</ion-title>
-  
-      <ion-buttons end>
-        <button end clear ion-button (click)="addCard()">
-          Add
-        </button>
-      </ion-buttons>
-    </ion-navbar>
+
+  <ion-navbar color="primary" padding-top>
+    <ion-title>My Cards</ion-title>
+
+    <ion-buttons end>
+      <button end clear ion-button (click)="addCard()">
+        Add
+      </button>
+    </ion-buttons>
+  </ion-navbar>
 </ion-header>
-  
-  
-  <ion-content padding-bottom class="card-background-page">
-  
-    <ion-card (click)="presentActionSheet()">
-        <img src="assets/card-bg/aib.jpg"/>
-        <div class="card-title">**** **** **** 1234</div>
-    </ion-card>
-  
-    <ion-card>
-        <img src="assets/card-bg/aib.jpg"/>
-        <div class="card-subtitle">41 Listings</div>
-    </ion-card>
-  
-    <ion-card>
-        <img src="assets/card-bg/aib.jpg"/>
-        <div class="card-subtitle">41 Listings</div>
-    </ion-card>
-  
-  </ion-content>
-  
+
+
+<ion-content padding-bottom class="card-background-page">
+
+    <div *ngIf="hasCard">
+      <ion-item  no-lines *ngFor="let aCard of cards" (click)="presentActionSheet(aCard.CardNum)">
+        <ion-card>
+          <img src="{{aCard.bgImg}}" />
+          <div class="card-title">{{aCard.hidedNum}}</div>
+        </ion-card>
+      </ion-item>
+    </div>
+
+    <div padding-left padding-right>
+      <button ion-item (click)="addCard()">
+        Add Card
+      </button>
+    </div>
+
+
+  <!-- <ion-card (click)="presentActionSheet()">
+    <img src="assets/card-bg/aib.jpg" />
+    <div class="card-title">**** **** **** 1234</div>
+  </ion-card>
+
+  <ion-card>
+    <img src="assets/card-bg/aib.jpg" />
+    <div class="card-subtitle">41 Listings</div>
+  </ion-card>
+
+  <ion-card>
+    <img src="assets/card-bg/aib.jpg" />
+    <div class="card-subtitle">41 Listings</div>
+  </ion-card> -->
+
+</ion-content>
