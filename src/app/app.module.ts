@@ -13,6 +13,7 @@ import { LoginPage } from '../pages/login/login';
 import { LandingPage } from '../pages/landing/landing';
 import { SignupPage } from '../pages/signup/signup';
 import { CardsPage } from '../pages/cards/cards';
+import { CardPage } from '../pages/card/card';
 import { AddcardPage } from '../pages/addcard/addcard';
 
 import { HandleSignupProvider } from '../providers/handle-signup/handle-signup';
@@ -26,6 +27,9 @@ import { CommunicationProvider } from '../providers/communication/communication'
 import { ZBar } from '@ionic-native/zbar';
 import { ServicesProvider } from '../providers/services/services';
 import { BrMaskerModule } from 'brmasker-ionic-3';
+import { CryptoProvider } from '../providers/crypto/crypto';
+import { File } from '@ionic-native/file';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
 @NgModule({
   declarations: [
@@ -38,6 +42,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     LandingPage,
     SignupPage,
     CardsPage,
+    CardPage,
     AddcardPage
   ],
   imports: [
@@ -58,11 +63,13 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     LandingPage,
     SignupPage,
     CardsPage,
+    CardPage,
     AddcardPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
+    BarcodeScanner,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     HandleSignupProvider,
     CryptographyProvider,
@@ -70,7 +77,9 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     Device,
     ZBar,
     CommunicationProvider,
-    ServicesProvider
+    ServicesProvider,
+    CryptoProvider,
+    File
   ]
 })
 export class AppModule {}

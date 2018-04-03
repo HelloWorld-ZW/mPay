@@ -8,7 +8,7 @@ import { HelperProvider } from '../helper/helper';
 @Injectable()
 export class ServicesProvider {
 
-  private HOST_URL:string = "http://10.102.25.18:8080/mPay_service1/webresources/";
+  private HOST_URL:string = "http://172.21.0.186:8080/mPay_service1/webresources/";
   private headers: any;
   private options: any;
 
@@ -61,7 +61,7 @@ export class ServicesProvider {
 
   doGET(path:string){
     return new Promise(resolve => {
-      this.http.get(path)
+      this.http.get(this.HOST_URL+path).map(res => res.json())
         .subscribe(data => {
           resolve(data);            
         },

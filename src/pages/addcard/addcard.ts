@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController, LoadingController, AlertController, Events } from 'ionic-angular';
 import { NgModel, Validators, FormControl, FormBuilder, FormGroup, ValidatorFn, AbstractControl } from '@angular/forms';
-import { CryptographyProvider } from '../../providers/cryptography/cryptography';
+import { CryptoProvider } from '../../providers/crypto/crypto';
 import { ServicesProvider } from '../../providers/services/services';
 import { HelperProvider } from '../../providers/helper/helper';
 
@@ -14,13 +14,17 @@ import { HelperProvider } from '../../providers/helper/helper';
 export class AddcardPage {
 
   expDate: any = "01/2018"
-  visa_img: any = "/assets/imgs/visa_credit_nocolor.png";
+  visa_img: any = "assets/imgs/visa_credit_nocolor.png";
   //visa_debit_img:any="/assets/imgs/visa_debit_nocolor.png";
-  master_img: any = "/assets/imgs/master_nocolor.png";
+  master_img: any = "assets/imgs/master_nocolor.png";
   minYear: any = (new Date()).getFullYear();
   maxYear: any = (new Date()).getFullYear() + 10;
 
   email: any;
+  pbk:any;
+  sessKey:any;
+  sessIv:any;
+
 
   private cardForm: FormGroup;
 
@@ -28,7 +32,7 @@ export class AddcardPage {
     public navParams: NavParams,
     public formBuilder: FormBuilder,
     public helper: HelperProvider,
-    public crypto: CryptographyProvider,
+    public crypto: CryptoProvider,
     public services: ServicesProvider,
     public toastCtrl: ToastController,
     public loadingCtrl: LoadingController,
@@ -43,7 +47,15 @@ export class AddcardPage {
 
     });
 
-    this.email = this.helper.getStorageData("loggedIn");
+    //this.email = this.helper.getStorageData("loggedIn");
+
+    this.email = navParams.get("email");
+    this.sessKey = navParams.get("sessKey");
+    this.sessIv = navParams.get("sessIv");
+    this.pbk = navParams.get("pbk");
+
+
+    alert("sessKey = "+this.sessKey);
   }
 
   ionViewDidLoad() {
@@ -62,20 +74,20 @@ export class AddcardPage {
     if (is_valid) {
       switch (parseInt(card_num.substring(0, card_num.length - (card_num.length - 1)))) {
         case 4:
-          this.visa_img = "/assets/imgs/visa_credit_color.png";
+          this.visa_img = "assets/imgs/visa_credit_color.png";
           break;
         case 5:
-          this.master_img = "/assets/imgs/master_color.png";
+          this.master_img = "assets/imgs/master_color.png";
           break;
       }
     }
     else {
       switch (parseInt(card_num.substring(0, card_num.length - (card_num.length - 1)))) {
         case 4:
-          this.visa_img = "/assets/imgs/visa_credit_nocolor.png";
+          this.visa_img = "assets/imgs/visa_credit_nocolor.png";
           break;
         case 5:
-          this.master_img = "/assets/imgs/master_nocolor.png";
+          this.master_img = "assets/imgs/master_nocolor.png";
           break;
       }
     }
@@ -93,21 +105,19 @@ export class AddcardPage {
       cvv = this.cardForm.value.cvv;
 
       let dataStr = JSON.stringify({
-        "email": this.email.__zone_symbol__value,
+        "email": this.email,
         "cardNum": cardNum,
-        "cardInfo": this.crypto.Sha256Hash(cardNum + holder + month + year + cvv).toString() //this.crypto.Sha256Hash(
+        "cardInfo": this.crypto.SHA256(cardNum + holder + month + year + cvv).toString() //this.crypto.Sha256Hash(
       });
-      let cipher = this.crypto.AESEnc(dataStr);
+      let cipher = this.crypto.AESEncypto(dataStr,this.sessKey, this.sessIv);
       let uuid = JSON.parse(this.helper.getDeviceInfo()).uuid;
       let data = JSON.stringify({
-        "uuid": this.crypto.RSAEnc(uuid + ""),
+        "uuid": this.crypto.RSAEncypto(uuid + "", this.pbk),
         "data": cipher
       });
 
       //TODO: POST
       this.addCardReturns(data);
-
-      console.log(data);
     }
     else {
       let toast = this.toastCtrl.create({

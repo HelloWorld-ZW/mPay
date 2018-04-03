@@ -7,6 +7,7 @@ import { CryptographyProvider } from '../../providers/cryptography/cryptography'
 import { CommunicationProvider } from '../../providers/communication/communication';
 import { ServicesProvider } from '../../providers/services/services';
 import { HelperProvider } from '../../providers/helper/helper';
+import { CryptoProvider } from '../../providers/crypto/crypto';
 
 @Component({
   selector: 'page-signup',
@@ -42,6 +43,7 @@ export class SignupPage {
     public formBuilder: FormBuilder,
     public services:ServicesProvider, 
     public helper: HelperProvider,
+    public crypto: CryptoProvider,
     public loadingCtrl: LoadingController, 
     public alertCtrl: AlertController) {
 
@@ -83,6 +85,34 @@ export class SignupPage {
   }
 
   submitSignUp(){
+
+    this.helper.readFile("sessionKey.json").then((data)=>{
+
+      let sessionKey = JSON.parse(data);
+      var signupData = this.formGroup.value;
+      var passworh_hash = this.crypto.SHA256(this.formGroup.value.password);
+      signupData.password = passworh_hash.toString();
+      delete signupData['re_password'];
+
+      var signUp_cipher = this.crypto.AESEncypto(JSON.stringify(signupData),sessionKey.key, sessionKey.iv);
+      this.helper.readFile("publicKey.json").then((pbk)=>{
+        let pbkJson = JSON.parse(pbk);
+        var uuid_cipher = this.crypto.RSAEncypto(JSON.parse(this.helper.getDeviceInfo()).uuid+"",pbkJson.pbk);
+
+        var signup_uuid_cipher = JSON.stringify({
+          "uuid":uuid_cipher,
+          "data": signUp_cipher
+        });
+
+        this.signupReturns(signup_uuid_cipher);
+
+      });
+
+    });
+
+
+
+/*
     var signupData = this.formGroup.value;
     var passworh_hash = this.cryptographyProvider.Sha256Hash(this.formGroup.value.password);
     signupData.password = passworh_hash.toString();
@@ -102,7 +132,7 @@ export class SignupPage {
 
     
     this.signupReturns(signup_uuid_cipher);
-    
+*/    
 
   }
   async signupReturns(cipher:any){

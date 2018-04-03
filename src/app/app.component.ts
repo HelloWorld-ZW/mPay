@@ -12,6 +12,7 @@ import { CommunicationProvider } from '../providers/communication/communication'
 import { HelperProvider } from '../providers/helper/helper';
 import { ServicesProvider } from '../providers/services/services';
 import { CryptographyProvider } from '../providers/cryptography/cryptography';
+import { CryptoProvider } from '../providers/crypto/crypto';
 
 @Component({
   templateUrl: 'app.html'
@@ -24,7 +25,8 @@ export class mPay {
     private communication:CommunicationProvider,
     private services:ServicesProvider,
     private helper:HelperProvider,
-    private crypto:CryptographyProvider) {
+    private crypto:CryptographyProvider,
+    private crypt:CryptoProvider) {
 
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
@@ -34,6 +36,51 @@ export class mPay {
       
       // this.communication.getPbkFromServer();////////////////////////
       try {
+
+        this.services.doGET("mpay/api/publickey").then((pbk)=>{
+
+          //get device info 
+          var deviceInfo = JSON.parse(this.helper.getDeviceInfo());
+
+          //gererate session key and iv
+          var sessionKey = JSON.parse(this.helper.generateSessionKey());
+          var dInfo_key = deviceInfo;
+          dInfo_key['sessKey'] = sessionKey.key;
+          dInfo_key['sessIv'] = sessionKey.iv;
+
+          var cipher = this.crypt.RSAEncypto(JSON.stringify(dInfo_key),pbk['keyValue']);
+          this.services.doPOST("mpay/device/create_update", cipher);
+          
+          //public key
+          this.helper.checkFile("publicKey.json")
+          .then((_)=>{
+            this.helper.writeFile("publicKey.json", JSON.stringify({"pbk":pbk['keyValue']}));
+          })
+          .catch((err)=>{
+            alert("Error: "+ err);
+            this.helper.createFile("publicKey.json");
+            this.helper.writeFile("publicKey.json", JSON.stringify({"pbk":pbk['keyValue']}));
+          })
+
+          // symmetric key
+          this.helper.checkFile("sessionKey.json")
+          .then((_)=>{
+            this.helper.writeFile("sessionKey.json", JSON.stringify(sessionKey));
+          })
+          .catch((err)=>{
+            alert("Error: "+ err);
+            this.helper.createFile("sessionKey.json");
+            this.helper.writeFile("sessionKey.json", JSON.stringify(sessionKey));
+          })
+
+        });
+
+
+
+
+
+/*
+
         //get server pbk and save to local storage
         this.services.getServerPBK();
         
@@ -57,7 +104,7 @@ export class mPay {
           console.log(cipher);
         },1500);
         
-
+*/
         
       } catch (error) {
         alert(error);
@@ -71,6 +118,7 @@ export class mPay {
       }, 500);
      
     });
+    
   }
 }
 

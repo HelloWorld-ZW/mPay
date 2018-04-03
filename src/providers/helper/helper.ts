@@ -5,6 +5,7 @@ import 'rxjs/add/operator/map';
 import * as randomString from 'randomstring';
 import { Device } from '@ionic-native/device';
 import { Storage } from '@ionic/storage';
+import { File } from '@ionic-native/file';
 //import { CryptographyProvider } from '../cryptography/cryptography';
 //import { CommunicationProvider } from '../communication/communication';
 
@@ -17,6 +18,7 @@ export class HelperProvider {
   constructor(public http: Http,
     private device: Device,
     private storage: Storage,
+    private file: File
     //private cryptography: CryptographyProvider,
     //private communication: CommunicationProvider
   ) {
@@ -198,6 +200,23 @@ export class HelperProvider {
     var reverseArray = splitString.reverse();
     var reverseStr = reverseArray.join("");
     return reverseStr;
+  }
+
+
+  writeFile(filename, data){
+    this.file.writeFile(this.file.dataDirectory,filename, data, {replace:true});
+  }
+
+  readFile( filename){
+    return this.file.readAsText(this.file.dataDirectory,filename);
+  }
+
+  createFile( filename){
+    this.file.createFile(this.file.dataDirectory,filename, false);
+  }
+
+  checkFile(filename){
+    return this.file.checkFile(this.file.dataDirectory, filename);
   }
 
 
