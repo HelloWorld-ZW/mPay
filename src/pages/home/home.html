@@ -125,13 +125,13 @@
   
         <div [ngSwitch]="section">
           <ion-list>
-            <ion-item *ngFor="let aTrans of transactions" (click)="itemPress()">
+            <ion-item *ngFor="let aTrans of transactions" (click)="transTap(aTrans.id, aTrans.transType)">
               <ion-avatar item-start>
                 <img src="https://gordon-beeming.gallerycdn.vsassets.io/extensions/gordon-beeming/github/0.10.0/1474455219937/img/logo.png">
               </ion-avatar>
-              <h2>{{aTrans.name}}</h2>
-              <p>Sent</p>
-              <p item-end>$102.99<br>10/09/17</p>
+              <h2>{{aTrans.receiver}}</h2>
+              <p>{{aTrans.type}}</p>
+              <p item-end>{{aTrans.amount| currency:'EUR'}}<br>{{aTrans.datetime| date:'dd/MM/yyyy HH:MM'}}</p>
             </ion-item>
           </ion-list> 
         </div>

@@ -73,8 +73,8 @@
 
 <ion-tabs #content>
     <ion-tab [root]="tab1Root" [rootParams]="navParams" tabTitle="Home" tabIcon="home" ></ion-tab>
-    <ion-tab [root]="tab2Root" tabTitle="Friends" tabIcon="ios-contacts"></ion-tab>
-    <ion-tab [root]="tab3Root" tabTitle="History" tabIcon="ios-list-box"></ion-tab>
+    <ion-tab [root]="tab2Root" [rootParams]="navParams" tabTitle="Friends" tabIcon="ios-contacts"></ion-tab>
+    <ion-tab [root]="tab3Root" [rootParams]="navParams" tabTitle="History" tabIcon="ios-list-box"></ion-tab>
     <!-- <ion-tab [root]="tab4Root" tabTitle="Settings" tabIcon="ios-settings"></ion-tab> -->
 </ion-tabs>
   

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, Events } from 'ionic-angular';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
-import { LoadingController, AlertController, ToastController } from 'ionic-angular';
+import { LoadingController, AlertController, ToastController, ModalController } from 'ionic-angular';
 import { CommunicationProvider } from '../../providers/communication/communication';
 import { CardPage } from '../card/card';
 import { ServicesProvider } from '../../providers/services/services';
@@ -30,6 +30,8 @@ export class HomePage {
   transactions: any = new Array();
   pages: any = [CardPage];
 
+  hasTransHistory:any;
+
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     private barcodeScanner: BarcodeScanner,
@@ -39,7 +41,10 @@ export class HomePage {
     public services: ServicesProvider,
     public crypto: CryptoProvider,
     public helper: HelperProvider,
-    public toastCtrl: ToastController) {
+    public toastCtrl: ToastController,
+    public event: Events,
+    public modalCtrl: ModalController
+  ) {
 
     //console.log(navParams.data);
     this.username = navParams.get("username");
@@ -53,21 +58,9 @@ export class HomePage {
     //alert(navParams.get("pbk"));
 
     this.logHistory();
-    //this.helper.setStorageData("loggedIn",this.email); //save logged in email locally
-
-    //alert(this.passcode);
-
-    for (var i = 0; i < 20; i++) {
-      let obj = {
-        "name": "Zhen",
-        "Date": "01/01/2018",
-        "transType": "Pay"
-      };
-      this.transactions.push(obj);
-    }
-
-    //load transaction history
-
+  
+    this.loadTrans();
+  
     this.loadCards();
 
   }
@@ -102,11 +95,6 @@ export class HomePage {
                     text: 'Pay',
                     handler: () => {
                       alert.dismiss();
-
-                      //TODO: 
-                      //check balance
-                      // if enough, pop up passcode alert
-                      // else pop up select card alert
 
                       if (this.balance < plainJson.amount) {
                         this.selectCardAlert(plainJson.merchantId, data.text);
@@ -186,9 +174,42 @@ export class HomePage {
   }
 
   async transProcessReturns(cipher){
+    let loading = this.loading.create({
+      content: 'Processing...'
+    });
+    loading.present();
+    
     this.services.doPOST("mpay/transaction/qrcodepayment",cipher).then((response)=>{
-      alert(response);
-    })
+
+      let responseJson = JSON.parse(response.toString());
+      if(responseJson.response==1){
+        try{
+          let plainStr = this.crypto.AESDecypto(responseJson.cipher, this.sessKey, this.sessIv);
+          let plainJson = JSON.parse(plainStr);
+          this.balance = plainJson.balance;
+          this.event.publish("updateBalance", this.balance);
+        }catch(e){
+
+        }
+        //alert(responseJson.cipher);
+        let toast = this.toastCtrl.create({
+          message: "Thank you, Payment Suceessfuly!",
+          duration: 3000,
+          position: 'top'
+        });
+        toast.present();
+      }
+      else{
+        let toast = this.toastCtrl.create({
+          message: responseJson.response,
+          duration: 3000,
+          position: 'top'
+        });
+        toast.present();
+      }
+
+      loading.dismiss();
+    });
   }
 
   passcodeAlert(merchantId, transCode, number) {
@@ -220,7 +241,6 @@ export class HomePage {
               });
               toast.present();
             }
-
           }
         }]
     });
@@ -335,6 +355,44 @@ export class HomePage {
       });
 
     }
+  }
+
+  loadTrans(){
+    let uuid = (JSON.parse(this.helper.getDeviceInfo()).uuid) + "";
+    let cipher = JSON.stringify({
+      "uuid": this.crypto.RSAEncypto(uuid, this.pbk),
+      "email": this.crypto.RSAEncypto(this.email, this.pbk),
+      "start": 0,
+      "end": 9
+    });
+    this.loadTransReturns(cipher)
+
+  }
+  async loadTransReturns(cipher){
+    let loading = this.loading.create({
+      content: 'Processing...'
+    });
+    loading.present();
+    let response = await this.services.doPOST("mpay/transaction/history", cipher).then(data => { return data; });
+    
+    let responseJson = JSON.parse(response.toString());
+    if(responseJson.response==1){
+      this.hasTransHistory=true;
+
+      let historyStr = this.crypto.AESDecypto(responseJson.cipher, this.sessKey, this.sessIv);
+      let historyArray = JSON.parse(historyStr);
+
+      this.transactions = historyArray;
+    }
+    else{
+      this.hasTransHistory=false;
+    }
+
+    loading.dismiss();
+  }
+
+  transTap(id,type){
+    alert(id+" "+type);
   }
 
 }
