@@ -42,6 +42,7 @@
     </platform>
     <platform name="ios">
         <preference name="CordovaWebViewEngine" value="CDVUIWebViewEngine" />
+        <preference name="KeyboardDisplayRequiresUserAction" value="false" />
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
@@ -90,4 +91,5 @@
     <engine name="ios" spec="^4.4.0" />
     <engine name="browser" spec="5.0.3" />
     <plugin name="phonegap-plugin-barcodescanner" spec="^7.1.0" />
+    <allow-navigation href="http://192.168.116.137:8100" />
 </widget>
