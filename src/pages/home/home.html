@@ -71,13 +71,13 @@
         </ion-buttons>
         </ion-col> 
 
-        <ion-col class="content-center" (click)="openPage(1)">
+        <ion-col class="content-center" (click)="topup_withdraw('Topup')">
           <ion-buttons>
           <button clear ion-button>
             <div>
-              <ion-icon name='md-paper' class="icon-S" color="primary"></ion-icon>
+              <ion-icon name='ios-cash' class="icon-S" color="primary"></ion-icon>
               <br>
-              <label class="label-M">Pay Bill</label>
+              <label class="label-M">Top-Up</label>
             </div>
           </button> 
         </ion-buttons>
@@ -85,15 +85,15 @@
 
         <ion-col class="content-center">
           <ion-buttons>
-          <button clear ion-button (click)="openPage(2)">
+          <button clear ion-button (click)="topup_withdraw('Withdraw')">
             <div>
-              <ion-icon name='md-phone-portrait' class="icon-S" color="primary"></ion-icon>
+              <ion-icon name='md-code-download' class="icon-S" color="primary"></ion-icon>
               <br>
-              <label class="label-M">Top-Up</label>
+              <label class="label-M">Withdraw</label>
             </div>
-          </button> 
+          </button>
         </ion-buttons>
-        </ion-col>  
+        </ion-col>
 
         <ion-col class="content-center">
           <ion-buttons>

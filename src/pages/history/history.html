@@ -6,8 +6,8 @@
 -->
 <ion-header>
 
-  <ion-navbar>
-    <ion-title>history</ion-title>
+  <ion-navbar color="primary">
+    <ion-title>Transaction List</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -15,10 +15,12 @@
 
 <ion-content>
 
+  <ion-searchbar></ion-searchbar>
+
   <ion-item-group *ngFor="let group of groupedHistory">
 
-    <ion-item-divider light>{{group.date}}</ion-item-divider>
-    <ion-item *ngFor="let aTrans of group.transHistory">
+    <ion-item-divider color="neutralLight2">{{group.date}}</ion-item-divider>
+    <ion-item *ngFor="let aTrans of group.transHistory" (click)="viewHistory(aTrans)">
       <ion-avatar item-start>
         <img src="https://gordon-beeming.gallerycdn.vsassets.io/extensions/gordon-beeming/github/0.10.0/1474455219937/img/logo.png">
       </ion-avatar>

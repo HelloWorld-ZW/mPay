@@ -15,6 +15,8 @@ import { SignupPage } from '../pages/signup/signup';
 import { CardsPage } from '../pages/cards/cards';
 import { CardPage } from '../pages/card/card';
 import { AddcardPage } from '../pages/addcard/addcard';
+import { HistoryModalPage } from '../pages/history-modal/history-modal';
+import { TopupWithdrawModalPage } from '../pages/topup-withdraw-modal/topup-withdraw-modal';
 
 import { HandleSignupProvider } from '../providers/handle-signup/handle-signup';
 
@@ -43,7 +45,9 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
     SignupPage,
     CardsPage,
     CardPage,
-    AddcardPage
+    AddcardPage,
+    HistoryModalPage,
+    TopupWithdrawModalPage
   ],
   imports: [
     BrowserModule,
@@ -64,7 +68,9 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
     SignupPage,
     CardsPage,
     CardPage,
-    AddcardPage
+    AddcardPage,
+    HistoryModalPage,
+    TopupWithdrawModalPage
   ],
   providers: [
     StatusBar,

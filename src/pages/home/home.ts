@@ -7,6 +7,7 @@ import { CardPage } from '../card/card';
 import { ServicesProvider } from '../../providers/services/services';
 import { CryptoProvider } from '../../providers/crypto/crypto';
 import { HelperProvider } from '../../providers/helper/helper';
+import { TopupWithdrawModalPage } from '../topup-withdraw-modal/topup-withdraw-modal';
 
 
 @Component({
@@ -394,5 +395,20 @@ export class HomePage {
   transTap(id,type){
     alert(id+" "+type);
   }
+
+  topup_withdraw(type:string){
+    let modal = this.modalCtrl.create(TopupWithdrawModalPage,
+      {
+        "type": type,
+        "cards": this.cards,
+        "balance": this.balance,
+        "email": this.email,
+        "pbk": this.pbk,
+        "sessKey": this.sessKey,
+        "sessIv": this.sessIv
+      });
+    modal.present();
+  }
+
 
 }

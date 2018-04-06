@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, ModalController  } from 'ionic-angular';
 import { ServicesProvider } from '../../providers/services/services';
 import { CryptoProvider } from '../../providers/crypto/crypto';
 import { HelperProvider } from '../../providers/helper/helper';
-
+import { HistoryModalPage } from '../history-modal/history-modal';
 
 @Component({
   selector: 'page-history',
@@ -27,7 +27,8 @@ export class HistoryPage {
     public services: ServicesProvider,
     public crypto: CryptoProvider,
     public helper: HelperProvider,
-    public loading: LoadingController
+    public loading: LoadingController,
+    public modalCtrl: ModalController
 
   ) {
     this.email = navParams.get("email");
@@ -36,7 +37,6 @@ export class HistoryPage {
     this.sessIv = navParams.get("sessIv");
 
     this.loadTrans();
-
   }
 
   ionViewDidLoad() {
@@ -53,9 +53,8 @@ export class HistoryPage {
       "end": 15
     });
     this.loadTransReturns(cipher)
-
-    this.groupHistory();
   }
+
   async loadTransReturns(cipher){
     let loading = this.loading.create({
       content: 'Processing...'
@@ -71,6 +70,7 @@ export class HistoryPage {
       let historyArray = JSON.parse(historyStr);
 
       this.transactions = historyArray;
+      this.groupHistory(historyArray);
     }
     else{
       this.hasTransHistory=false;
@@ -78,14 +78,14 @@ export class HistoryPage {
     loading.dismiss();
   }
 
-  groupHistory(){
+  groupHistory(history){
     
     let currentDate = null;
     let currentTranHistory = [];
 
-    this.transactions.array.forEach(obj => {
+    history.forEach(obj => {
       let date = new Date(obj.datetime);
-      let dateStr = date.getDate()+'/'+date.getMonth()+'/'+date.getFullYear();
+      let dateStr = date.toDateString();//date.getDate()+'/'+date.getMonth()+'/'+date.getFullYear();
       
       if(dateStr != currentDate){
         
@@ -112,5 +112,9 @@ export class HistoryPage {
     }, 3000);
   }
 
+  viewHistory(aTrans){
+    let modal = this.modalCtrl.create(HistoryModalPage,{"aTrans": aTrans});
+    modal.present();
+  }
 
 }
