@@ -125,7 +125,7 @@
   
         <div [ngSwitch]="section">
           <ion-list>
-            <ion-item *ngFor="let aTrans of transactions" (click)="transTap(aTrans.id, aTrans.transType)">
+            <ion-item *ngFor="let aTrans of transactions" (click)="viewHistory(aTrans)">
               <ion-avatar item-start>
                 <img src="https://gordon-beeming.gallerycdn.vsassets.io/extensions/gordon-beeming/github/0.10.0/1474455219937/img/logo.png">
               </ion-avatar>

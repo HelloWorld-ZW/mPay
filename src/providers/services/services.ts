@@ -8,7 +8,7 @@ import { HelperProvider } from '../helper/helper';
 @Injectable()
 export class ServicesProvider {
 
-  private HOST_URL:string = "http://172.21.0.247:8080/mPay_service1/webresources/";
+  private HOST_URL:string = "http://10.102.24.104:8080/mPay_service1/webresources/";
   private headers: any;
   private options: any;
 

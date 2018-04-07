@@ -8,6 +8,7 @@ import { ServicesProvider } from '../../providers/services/services';
 import { CryptoProvider } from '../../providers/crypto/crypto';
 import { HelperProvider } from '../../providers/helper/helper';
 import { TopupWithdrawModalPage } from '../topup-withdraw-modal/topup-withdraw-modal';
+import { HistoryModalPage } from '../history-modal/history-modal';
 
 
 @Component({
@@ -63,6 +64,10 @@ export class HomePage {
     this.loadTrans();
   
     this.loadCards();
+
+    this.updateHistory();
+
+    this.realodCardListener();
 
   }
   //constructor END
@@ -192,9 +197,11 @@ export class HomePage {
         }catch(e){
 
         }
+
+        this.loadTrans();
         //alert(responseJson.cipher);
         let toast = this.toastCtrl.create({
-          message: "Thank you, Payment Suceessfuly!",
+          message: "Thank you, Payment Suceessfully!",
           duration: 3000,
           position: 'top'
         });
@@ -408,6 +415,23 @@ export class HomePage {
         "sessIv": this.sessIv
       });
     modal.present();
+  }
+
+  updateHistory(){
+    this.event.subscribe('updateHistory', () => {
+      this.loadTrans();
+    });
+  }
+
+  viewHistory(aTrans){
+    let modal = this.modalCtrl.create(HistoryModalPage,{"aTrans": aTrans});
+    modal.present();
+  }
+
+  realodCardListener() {
+    this.event.subscribe('reloadCards', () => {
+      this.loadCards();
+    });
   }
 
 

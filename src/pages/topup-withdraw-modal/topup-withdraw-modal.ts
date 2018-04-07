@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ModalController, ViewController, AlertController, LoadingController } from 'ionic-angular';
+import {
+  NavController, NavParams, ModalController, ViewController,
+  AlertController, LoadingController, Events
+} from 'ionic-angular';
 import { ServicesProvider } from '../../providers/services/services';
 import { CryptoProvider } from '../../providers/crypto/crypto';
 import { HelperProvider } from '../../providers/helper/helper';
@@ -32,7 +35,8 @@ export class TopupWithdrawModalPage {
     public crypto: CryptoProvider,
     public helper: HelperProvider,
     public alertCtrl: AlertController,
-    public loadingCtrl: LoadingController
+    public loadingCtrl: LoadingController,
+    public event: Events
   ) {
     this.type = this.navParams.get('type');
     this.cards = this.navParams.get('cards');
@@ -76,13 +80,13 @@ export class TopupWithdrawModalPage {
 
   onChange() {
     //this.inputMoney = this.inputMoney.replace(/,/g , ".");
-    setTimeout(()=>{
+    setTimeout(() => {
       if (this.type == 'Withdraw') {
-        if (parseFloat(this.inputMoney) > parseFloat(this.balance)){
+        if (parseFloat(this.inputMoney) > parseFloat(this.balance)) {
           this.inputMoney = this.balance;
         }
       }
-    },500);
+    }, 500);
   }
 
   onSubmit() {
@@ -91,7 +95,7 @@ export class TopupWithdrawModalPage {
       let alert = this.alertCtrl.create({
         title: 'No Card Selected',
         subTitle: 'Please select a card to continue!',
-        buttons: ['Dismiss']
+        buttons: ['Ok']
       });
       alert.present();
     }
@@ -100,7 +104,15 @@ export class TopupWithdrawModalPage {
       let alert = this.alertCtrl.create({
         title: 'No amount Entered',
         subTitle: 'Please enter ' + this.type + ' amount to continue!',
-        buttons: ['Dismiss']
+        buttons: ['Ok']
+      });
+      alert.present();
+    }
+    else if (parseFloat(this.inputMoney) < 0.01) {
+      let alert = this.alertCtrl.create({
+        title: 'Error',
+        subTitle: 'Cannot '+this.type+' less than 0.01',
+        buttons: ['Ok']
       });
       alert.present();
     }
@@ -129,10 +141,58 @@ export class TopupWithdrawModalPage {
 
         switch (this.type) {
           case "Topup":
-            this.services.doPOST("mpay/tpwd/topup", postData);
+            this.services.doPOST("mpay/tpwd/topup", postData).then((response) => {
+              let responseJson = JSON.parse(response.toString());
+              if (responseJson.response == 1) {
+                this.balance = this.crypto.AESDecypto(responseJson.balance, this.sessKey, this.sessIv);
+                
+                this.event.publish("updateBalance", this.balance);
+                this.event.publish("updateHistory");
+
+                let alert = this.alertCtrl.create({
+                  title: 'Topup Successfully',
+                  buttons: ['OK']
+                });
+                alert.present();
+
+                this.dismiss();
+              }
+              else {
+                let alert = this.alertCtrl.create({
+                  title: 'Error',
+                  subTitle: responseJson.response,
+                  buttons: ['OK']
+                });
+                alert.present();
+              }
+            });
             break;
           case "Withdraw":
-            this.services.doPOST("mpay/tpwd/withdraw", postData);
+            this.services.doPOST("mpay/tpwd/withdraw", postData).then((response)=>{
+              let responseJson = JSON.parse(response.toString());
+              if (responseJson.response == 1) {
+                this.balance = this.crypto.AESDecypto(responseJson.balance, this.sessKey, this.sessIv);
+                
+                this.event.publish("updateBalance", this.balance);
+                this.event.publish("updateHistory");
+
+                let alert = this.alertCtrl.create({
+                  title: 'Withdraw Successfully',
+                  buttons: ['OK']
+                });
+                alert.present();
+
+                this.dismiss();
+              }
+              else {
+                let alert = this.alertCtrl.create({
+                  title: 'Error',
+                  subTitle: responseJson.response,
+                  buttons: ['OK']
+                });
+                alert.present();
+              }
+            });
             break;
         }
       }, 500);

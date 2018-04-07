@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, LoadingController, ModalController  } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, ModalController, Events } from 'ionic-angular';
 import { ServicesProvider } from '../../providers/services/services';
 import { CryptoProvider } from '../../providers/crypto/crypto';
 import { HelperProvider } from '../../providers/helper/helper';
@@ -22,13 +22,18 @@ export class HistoryPage {
 
   hasTransHistory:any;
 
+
+  start:any = 0;
+  end:any = 14;
+
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
     public services: ServicesProvider,
     public crypto: CryptoProvider,
     public helper: HelperProvider,
     public loading: LoadingController,
-    public modalCtrl: ModalController
+    public modalCtrl: ModalController,
+    public event:Events
 
   ) {
     this.email = navParams.get("email");
@@ -37,6 +42,8 @@ export class HistoryPage {
     this.sessIv = navParams.get("sessIv");
 
     this.loadTrans();
+
+    this.updateHistory();
   }
 
   ionViewDidLoad() {
@@ -49,8 +56,8 @@ export class HistoryPage {
     let cipher = JSON.stringify({
       "uuid": this.crypto.RSAEncypto(uuid, this.pbk),
       "email": this.crypto.RSAEncypto(this.email, this.pbk),
-      "start": 0,
-      "end": 15
+      "start": this.start,
+      "end": this.end
     });
     this.loadTransReturns(cipher)
   }
@@ -107,6 +114,10 @@ export class HistoryPage {
 
   loadMore(infiniteScroll) {
 
+    this.start = this.start+15;
+    this.end = this.end+15;
+    this.loadTrans();
+
     setTimeout(() => {
       infiniteScroll.complete();
     }, 3000);
@@ -115,6 +126,15 @@ export class HistoryPage {
   viewHistory(aTrans){
     let modal = this.modalCtrl.create(HistoryModalPage,{"aTrans": aTrans});
     modal.present();
+  }
+
+  updateHistory(){
+    this.transactions = new Array();
+    this.groupedHistory = new Array();
+    
+    this.event.subscribe('updateHistory', () => {
+      this.loadTrans();
+    });
   }
 
 }
