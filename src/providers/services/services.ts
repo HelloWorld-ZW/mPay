@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions} from '@angular/http';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/timeout';
 import { Storage } from '@ionic/storage';
 import { CryptographyProvider } from '../cryptography/cryptography';
 import { HelperProvider } from '../helper/helper';
@@ -8,9 +9,11 @@ import { HelperProvider } from '../helper/helper';
 @Injectable()
 export class ServicesProvider {
 
-  private HOST_URL:string = "http://10.102.24.104:8080/mPay_service1/webresources/";
+  //private HOST_URL:string = "http://172.21.11.102:8080/mPay_service1/webresources/";
+  private HOST_URL:string = "http://192.168.1.2:8080/mPay_service1/webresources/";
   private headers: any;
   private options: any;
+
 
   constructor(public http: Http,
     private storage: Storage,
@@ -26,9 +29,12 @@ export class ServicesProvider {
 
   getServerPBK(){
     var url = this.HOST_URL+"mpay/api/publickey";
-    this.http.get(url).map(res => res.json()).subscribe(data => {
-      console.log("REST; "+data.keyValue);
+    this.http.get(url)
+    .map(res => res.json()).subscribe(data => {
+      //console.log("REST; "+data.keyValue);
       this.helper.setStorageData("ServerPBK", data.keyValue);
+    },err => {
+      alert(err);
     });
   }
 

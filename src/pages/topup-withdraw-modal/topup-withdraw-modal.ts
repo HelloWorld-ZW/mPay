@@ -86,7 +86,7 @@ export class TopupWithdrawModalPage {
           this.inputMoney = this.balance;
         }
       }
-    }, 500);
+    }, 300);
   }
 
   onSubmit() {
