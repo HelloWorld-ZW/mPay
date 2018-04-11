@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController,ToastController,Events } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController,ToastController,Events, ActionSheetController } from 'ionic-angular';
 import { ServicesProvider } from '../../providers/services/services';
 import { CryptoProvider } from '../../providers/crypto/crypto';
 import { HelperProvider } from '../../providers/helper/helper';
@@ -27,6 +27,8 @@ export class FriendsPage {
   end:any=9;
 
   friendsList: any = new Array();
+  groupedFriendList:any = new Array();
+
   haveMore: any = 1;
 
   constructor(public navCtrl: NavController,
@@ -36,7 +38,8 @@ export class FriendsPage {
     public crypto: CryptoProvider,
     public helper: HelperProvider,
     public toastCtrl: ToastController,
-    public event: Events
+    public event: Events,
+    public actionSheetCtrl: ActionSheetController
 
   ) {
     this.email = navParams.get("email");
@@ -48,7 +51,6 @@ export class FriendsPage {
     this.uuid_cipher = this.crypto.RSAEncypto(this.helper.getDeviceUUID(), this.pbk);
 
     this.loadFriends(this.start, this.end);
-    //this.loopLoading();
 
   }
 
@@ -179,6 +181,15 @@ export class FriendsPage {
       if(responseJson.response==1){
         let friendName = this.crypto.AESDecypto(responseJson.friendName, this.sessKey, this.sessIv);
         toast.setMessage(friendName+" added successfully to list!")
+        
+        this.previousVal='';
+
+        this.start = 0, this.end=9;
+
+        this.friendsList = new Array();
+        this.groupedFriendList = new Array();
+        this.loadFriends(this.start, this.end);
+        
       }
       else if(responseJson.response==0){
         let message = this.crypto.AESDecypto(responseJson.message, this.sessKey, this.sessIv);
@@ -208,32 +219,149 @@ export class FriendsPage {
       if(responseJson.response==1){
         let responseList = JSON.parse(this.crypto.AESDecypto(responseJson.list,this.sessKey, this.sessIv));
 
-        // (responseList).forEach(aFriend => {
-
-        //   this.friendsList.push(aFriend);
-
-        // });
-
         this.friendsList = this.friendsList.concat(responseList);
       }
 
-      //this.haveMore = responseJson.more;
-
+      
       if(responseJson.more==1){
         this.loadFriends(this.start+10, this.end+10);
       }
+      else if(responseJson.more==0){
+        //alert(this.friendsList.length);
+        this.groupFriends(this.friendsList);
+      }
+     
+
+    });
+
+  }
+
+  groupFriends(list){
+    
+    let currentLetter = null;
+    let currentFriend = [];
+
+    list.forEach(aFriend => {
+      let aFriendLetter = aFriend.userName.substring(0,1).toUpperCase();
+      
+      if(aFriendLetter != currentLetter){
+        
+        currentLetter = aFriendLetter;
+        
+        let newGroup = {
+          "gName": currentLetter,
+          "friends":[]
+        };
+        
+        currentFriend = newGroup.friends;
+        this.groupedFriendList.push(newGroup);
+      }
+
+      currentFriend.push(aFriend);
 
     });
   }
 
-   loopLoading(){
+  friendSelected(aFriend) {
 
-    while(this.haveMore==1){
-      this.loadFriends(this.start, this.end);
-      this.start+=10;
-      this.end+=10;
-    }
+    let actionSheet = this.actionSheetCtrl.create({
+      title: aFriend.userName,
+      buttons: [
+        {
+          text: 'Delete',
+          role: 'destructive',
+          handler: () => {
+            this.deleteFriend(aFriend);
+          }
+        }, {
+          text: 'Send Money',
+          handler: () => {
+            console.log('View Balance clicked');
+          }
+        }, {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    actionSheet.present();
+  }
+
+  deleteFriend(aFriend){
+    let confirm = this.alertCtrl.create({
+      title: 'Delete',
+      message: 'Are you sure to Delete <b>'+aFriend.userName+'</b> ?',
+      buttons: [
+        {
+          text: 'No'
+        },
+        {
+          text: 'Yes',
+          handler: () => {
+            this.deleteConfirm(aFriend);
+          }
+        }
+      ]
+    });
+    confirm.present();
+  }
+  
+  deleteConfirm(aFriend){
+    let data = JSON.stringify({
+      'selfEmail': this.email,
+      'frinedEmail': aFriend.userEmail
+    });
+
+    let data_cipher = this.crypto.AESEncypto(data, this.sessKey, this.sessIv);
+
+    let postData = JSON.stringify({
+      'uuid':this.uuid_cipher,
+      'data': data_cipher
+    });
+
+    this.services.doPOST("mpay/account/deleteFriend", postData).then((response)=>{
+
+      let responseJson = JSON.parse(response.toString());
+      let msg = '';
+      
+      let toast = this.toastCtrl.create({
+        duration: 3000,
+        position:'top',
+        showCloseButton: true,
+        closeButtonText: 'Ok'
+      });
+
+      if(responseJson.response==1){
+        msg = aFriend.userName+" has been removed from list";
+        
+        let firstLetter = aFriend.userName.substring(0,1).toUpperCase();
+
+        this.groupedFriendList.forEach(aGroup => {
+          if(aGroup.gName == firstLetter){
+            var index = aGroup.friends.indexOf(aFriend);
+            aGroup.friends.splice(index, 1);
+          }
+
+          if(aGroup.friends.length==0)
+          {
+            this.groupedFriendList.splice(this.groupedFriendList.indexOf(aGroup),1);
+          }
+        });     
+
+        toast.setMessage(msg);
+      }
+      else{
+        msg = responseJson.response;
+        toast.setMessage(msg);
+      }
+      toast.present();
+
+    });
 
   }
+
 
 }
