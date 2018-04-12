@@ -10,12 +10,14 @@
     <ion-title>Transaction List</ion-title>
   </ion-navbar>
 
+
+  <ion-toolbar no-border-top>
+    <ion-searchbar></ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
 
 <ion-content>
-
-  <ion-searchbar></ion-searchbar>
 
   <ion-item-group *ngFor="let group of groupedHistory">
 

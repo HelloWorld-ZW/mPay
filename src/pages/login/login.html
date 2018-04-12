@@ -1,36 +1,37 @@
-
 <ion-content class="login-content" padding>
 	<ion-row class="logo-row">
-	  <ion-col></ion-col>
-	  <ion-col width-67>
-		<img src="assets/imgs/square_2.jpg"/>
-	  </ion-col>
-	  <ion-col></ion-col>
+		<ion-col></ion-col>
+		<ion-col width-67>
+			<img src="assets/imgs/square_2.jpg" />
+		</ion-col>
+		<ion-col></ion-col>
 	</ion-row>
 	<div class="login-box">
-	<ion-item>
-		<ion-label stacked>Email</ion-label>
-		<ion-input type="text" 
-			[(ngModel)]="login_email"></ion-input>
-	</ion-item>
+		<ion-item>
+			<ion-label stacked>Email</ion-label>
+			<ion-input type="text" [(ngModel)]="login_email"></ion-input>
+		</ion-item>
 
-	<ion-item>
-		<ion-label stacked>Password</ion-label>
-		<ion-input type="password" 
-			[(ngModel)]="login_password"></ion-input>
-	</ion-item>
-	<a style="float: right; text-decoration: none;" 
-		href="#">Forgot Password?</a>
-	<br/>
-
-	<div padding style="text-align: center; ">
-		<button ion-button color="primary" 
-			block (click)="submitLogin()">Sign in</button>
+		<ion-item>
+			<ion-label stacked>Password</ion-label>
+			<ion-input type="password" [(ngModel)]="login_password"></ion-input>
+		</ion-item>
+		<a style="float: right; text-decoration: none;" href="#">Forgot Password?</a>
 		<br/>
-		<a style="text-decoration: none;" 
-			nohref="" (click)="signup()">
-			Create an account </a>
-		
+
+		<div padding style="text-align: center; ">
+			<button ion-button color="primary" block (click)="submitLogin()">Sign in</button>
+			<br/>
+			<a style="text-decoration: none;" nohref="" (click)="signup()">
+				Create an account </a>
+
+		</div>
 	</div>
-</div>
+
+	<div class="fingerprint_div" *ngIf="fingerprintLogin">
+			<button ion-button color="danger" clear large round icon-only (click)="showFingerprint()">
+				<ion-icon ios="ios-finger-print" md="md-finger-print"></ion-icon>
+			</button>
+	</div>
+
 </ion-content>

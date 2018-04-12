@@ -17,6 +17,7 @@ import { CardPage } from '../pages/card/card';
 import { AddcardPage } from '../pages/addcard/addcard';
 import { HistoryModalPage } from '../pages/history-modal/history-modal';
 import { TopupWithdrawModalPage } from '../pages/topup-withdraw-modal/topup-withdraw-modal';
+import { SettingsPage } from '../pages/settings/settings';
 
 import { HandleSignupProvider } from '../providers/handle-signup/handle-signup';
 
@@ -32,6 +33,9 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
 import { CryptoProvider } from '../providers/crypto/crypto';
 import { File } from '@ionic-native/file';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+import { FingerprintAIO } from '@ionic-native/fingerprint-aio';
+
+
 
 @NgModule({
   declarations: [
@@ -47,7 +51,8 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
     CardPage,
     AddcardPage,
     HistoryModalPage,
-    TopupWithdrawModalPage
+    TopupWithdrawModalPage,
+    SettingsPage
   ],
   imports: [
     BrowserModule,
@@ -70,7 +75,8 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
     CardPage,
     AddcardPage,
     HistoryModalPage,
-    TopupWithdrawModalPage
+    TopupWithdrawModalPage,
+    SettingsPage
   ],
   providers: [
     StatusBar,
@@ -85,7 +91,8 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
     CommunicationProvider,
     ServicesProvider,
     CryptoProvider,
-    File
+    File,
+    FingerprintAIO
   ]
 })
 export class AppModule {}

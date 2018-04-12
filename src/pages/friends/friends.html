@@ -9,11 +9,14 @@
       </button>
     </ion-buttons>
   </ion-navbar>
+  
+  <ion-toolbar no-border-top>
+      <ion-searchbar></ion-searchbar>
+    </ion-toolbar>
 </ion-header>
 
 
 <ion-content padding-bottom>
-  <ion-searchbar></ion-searchbar>
 
   <ion-item-group *ngFor="let group of groupedFriendList">
 

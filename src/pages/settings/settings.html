@@ -1,0 +1,34 @@
+<ion-header>
+
+  <ion-navbar color="primary" padding-top>
+    <ion-title>Settings</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+
+  <ion-list>
+    <ion-list-header>
+      Fingerprint Settings
+    </ion-list-header>
+
+    <ion-item>
+      <ion-icon color="danger" item-start name="finger-print"></ion-icon>
+      <ion-label>Fingerprint Login</ion-label>
+      <ion-toggle (ionChange)="fp_login($event)" checked="false"></ion-toggle>
+    </ion-item>
+
+    <ion-item>
+      <ion-icon color="danger" item-start name="finger-print"></ion-icon>
+      <ion-label>Fingerprint Payment</ion-label>
+      <ion-toggle checked="false"></ion-toggle>
+    </ion-item>
+
+  </ion-list>
+
+  <div padding-left padding-right>
+    <sub ion-text color="neutraldark1">To use Fingerprint settings, the device must be has fingerprint supported!</sub>
+  </div>
+</ion-content>

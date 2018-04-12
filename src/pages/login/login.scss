@@ -5,6 +5,20 @@ page-login {
         padding-top: 50px;
         padding-bottom: 20px;
         }
+
+        .fingerprint_div{
+            text-align:center;
+
+
+            ion-button{
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            ion-icon{
+                font-size: 60px !important;
+            }
+        }
     }
     
 }

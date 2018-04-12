@@ -8,48 +8,79 @@ import { HelperProvider } from '../../providers/helper/helper';
 import { ServicesProvider } from '../../providers/services/services';
 import { CryptoProvider } from '../../providers/crypto/crypto';
 
+import { FingerprintAIO } from '@ionic-native/fingerprint-aio';
+import { Platform } from 'ionic-angular';
+
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html',
 })
 export class LoginPage {
 
-  loader:any;
-  login_email:string;
-  login_password:string;
+  loader: any;
+  login_email: string = 'zhen446@hotmail.com';
+  login_password: string = 'Zhen..11';
 
-  loginedData:any;
+  loginedData: any;
 
-  publicKey:any;
-  sessKey:any;
-  sessIv:any;
+  publicKey: any;
+  sessKey: any;
+  sessIv: any;
 
-  constructor(public navCtrl: NavController, 
-    public navParams: NavParams, 
-    public loadingCtrl:LoadingController,
-    public communication:CommunicationProvider,
+  fingerprintLogin: any = false;
+
+
+  constructor(public navCtrl: NavController,
+    public navParams: NavParams,
+    public loadingCtrl: LoadingController,
+    public communication: CommunicationProvider,
     public toastCtrl: ToastController,
-    public cryptography:CryptographyProvider,
+    public cryptography: CryptographyProvider,
     public helper: HelperProvider,
     public services: ServicesProvider,
-    public crypto: CryptoProvider) {
+    public crypto: CryptoProvider,
+    private fingerprint: FingerprintAIO,
+    private platform: Platform
+  ) {
 
-    setInterval(()=>{
+    setInterval(() => {
       //alert("hello");
-    },5000);
+    }, 5000);
 
-  }
+
+    this.checkIsAvailable();
+
+    // this.platform.ready().then(() => {
+
+    //   this.fingerprint.isAvailable().then((data) => {
+    //     // this.helper.checkFile("settings.json")
+    //     //   .then((bl) => {
+    //     //     alert(bl);
+    //     //     //this.fingerprintLogin = true;
+    //     //   })
+    //     //   .catch((err) => {
+    //     //     alert(err);
+    //     //     //this.fingerprintLogin = false;
+    //     //   });
+    //   })
+    //     .catch((err) => {
+    //       alert(err);
+    //     })
+
+    // });
+
+  } //end constractor
 
   ionViewDidLoad() {
-    //console.log('ionViewDidLoad LoginPage');
+
   }
 
   /////////////////////////////////////////////////////////////
 
-  submitLogin(){
+  submitLogin() {
 
-    this.helper.readFile("sessionKey.json").then((data)=>{
-      
+    this.helper.readFile("sessionKey.json").then((data) => {
+
       let sessionKey = JSON.parse(data);
 
       var loginCipher = this.crypto.AESEncypto(JSON.stringify({
@@ -57,9 +88,9 @@ export class LoginPage {
         "password": this.cryptography.Sha256Hash(this.login_password).toString()
       }), sessionKey.key, sessionKey.iv);
 
-      this.helper.readFile("publicKey.json").then((pbk)=>{
+      this.helper.readFile("publicKey.json").then((pbk) => {
         let pbkJson = JSON.parse(pbk);
-        var uuid_cipher = this.crypto.RSAEncypto(JSON.parse(this.helper.getDeviceInfo()).uuid+"",pbkJson.pbk);
+        var uuid_cipher = this.crypto.RSAEncypto(JSON.parse(this.helper.getDeviceInfo()).uuid + "", pbkJson.pbk);
 
         var uuid_login_cipher = JSON.stringify({
           "uuid": uuid_cipher,
@@ -93,21 +124,21 @@ export class LoginPage {
     */
   }
 
-  async loginReturn(cipher:any){
+  async loginReturn(cipher: any) {
     let loading = this.loadingCtrl.create({
       content: 'Please wait...'
     });
     loading.present();
-    let response = await this.services.doPOST("mpay/account/signin",cipher).then(data=>{return data;});
+    let response = await this.services.doPOST("mpay/account/signin", cipher).then(data => { return data; });
     loading.dismiss();
 
     let responseJson = JSON.parse(response.toString());
 
-    if(responseJson.response==1){
+    if (responseJson.response == 1) {
       //nav to home page
-      
-      this.helper.readFile("sessionKey.json").then((data)=>{
-        
+
+      this.helper.readFile("sessionKey.json").then((data) => {
+
         let sessionKey = JSON.parse(data);
         //alert(sessionKey.key);
 
@@ -119,7 +150,7 @@ export class LoginPage {
         this.navCtrl.setRoot(TabsPage, navPar);
       });
     }
-    else{
+    else {
       let toast = this.toastCtrl.create({
         message: responseJson.response,
         duration: 3000,
@@ -130,7 +161,46 @@ export class LoginPage {
   }
 
 
-  signup(){
+  signup() {
     this.navCtrl.push(SignupPage);
   }
+
+  async checkIsAvailable() {
+    try{
+
+      await this.platform.ready();
+      const isAvailable = await this.fingerprint.isAvailable();
+      if(isAvailable=="Available"){
+        const isFileExist = await this.helper.checkFile("settings.json");
+        if(isFileExist){
+          this.helper.readFile("settings.json").then((data)=>{
+            
+            let settings = JSON.parse(data);
+            //let settingEmail = settings.email;
+            //let settingPassword = settings.password;
+            //let settingFpPayment = settings.payment;
+            let settingFpLogin = settings.login;
+            if(settingFpLogin==1){
+              this.fingerprintLogin = true;
+            }
+          });
+        }
+      }
+
+    }catch(e){
+      this.fingerprintLogin = false;
+    }
+    
+  }
+
+  showFingerprint(){
+    this.fingerprint.show({
+      clientId: 'Login: '+ this.login_email,
+      localizedFallbackTitle: 'Use Pin', //Only for iOS
+      localizedReason: 'Login: '+ this.login_email //Only for iOS
+    })
+      .then((result: any) => console.log(result))
+      .catch((error: any) => console.log(error));
+  }
+
 }
