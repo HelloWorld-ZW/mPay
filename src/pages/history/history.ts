@@ -63,10 +63,10 @@ export class HistoryPage {
   }
 
   async loadTransReturns(cipher){
-    let loading = this.loading.create({
-      content: 'Processing...'
-    });
-    loading.present();
+    // let loading = this.loading.create({
+    //   content: 'Processing...'
+    // });
+    // loading.present();
     let response = await this.services.doPOST("mpay/transaction/history", cipher).then(data => { return data; });
     
     let responseJson = JSON.parse(response.toString());
@@ -82,7 +82,7 @@ export class HistoryPage {
     else{
       this.hasTransHistory=false;
     }
-    loading.dismiss();
+    //loading.dismiss();
   }
 
   groupHistory(history){

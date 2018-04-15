@@ -19,9 +19,13 @@ export class HomePage {
 
   username: string;
   email: string;
+  password:any;
   balance: any;
   ipAddress: string;
   passcode: string;
+
+  fpLogin:any;
+  fpPay:any;
 
   pbk: any;
   sessKey: any;
@@ -51,6 +55,7 @@ export class HomePage {
     //console.log(navParams.data);
     this.username = navParams.get("username");
     this.email = navParams.get("email");
+    this.password = navParams.get("password");
     this.balance = navParams.get("balance");
     this.passcode = navParams.get("passcode");
 
@@ -58,6 +63,9 @@ export class HomePage {
     this.sessKey = navParams.get("sessKey");
     this.sessIv = navParams.get("sessIv");
     //alert(navParams.get("pbk"));
+
+    this.fpPay = navParams.get("fpPay");
+    this.fpLogin = navParams.get("fpLogin");
 
     this.logHistory();
   
@@ -68,6 +76,12 @@ export class HomePage {
     this.updateHistory();
 
     this.realodCardListener();
+
+    this.writeSettingFile();
+
+    setInterval(()=>{
+      this.loadTrans();
+    },10000);
 
   }
   //constructor END
@@ -377,10 +391,10 @@ export class HomePage {
 
   }
   async loadTransReturns(cipher){
-    let loading = this.loading.create({
-      content: 'Processing...'
-    });
-    loading.present();
+    // let loading = this.loading.create({
+    //   content: 'Processing...'
+    // });
+    // loading.present();
     let response = await this.services.doPOST("mpay/transaction/history", cipher).then(data => { return data; });
     
     let responseJson = JSON.parse(response.toString());
@@ -396,7 +410,7 @@ export class HomePage {
       this.hasTransHistory=false;
     }
 
-    loading.dismiss();
+    //loading.dismiss();
   }
 
   transTap(id,type){
@@ -432,6 +446,17 @@ export class HomePage {
     this.event.subscribe('reloadCards', () => {
       this.loadCards();
     });
+  }
+
+  async writeSettingFile(){
+    let settings = JSON.stringify({
+      'email': this.email,
+      'password': this.password,
+      'fpLogin': this.fpLogin,
+      'fpPay': this.fpPay
+    });
+
+    await this.helper.writeFile("settings.json", settings);
   }
 
 

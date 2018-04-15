@@ -18,8 +18,8 @@ import { Platform } from 'ionic-angular';
 export class LoginPage {
 
   loader: any;
-  login_email: string = 'zhen446@hotmail.com';
-  login_password: string = 'Zhen..11';
+  login_email: string;// = 'zhen446@hotmail.com';
+  login_password: string;// = 'Zhen..11';
 
   loginedData: any;
 
@@ -27,7 +27,11 @@ export class LoginPage {
   sessKey: any;
   sessIv: any;
 
+  userSettings: any;
+
   fingerprintLogin: any = false;
+
+  settingEmail:any;
 
 
   constructor(public navCtrl: NavController,
@@ -97,6 +101,7 @@ export class LoginPage {
           "data": loginCipher
         });
 
+        //alert("Login Cipher: "+ uuid_login_cipher);
         this.loginReturn(uuid_login_cipher);
 
         this.publicKey = pbkJson.pbk;
@@ -166,41 +171,57 @@ export class LoginPage {
   }
 
   async checkIsAvailable() {
-    try{
+    try {
 
       await this.platform.ready();
       const isAvailable = await this.fingerprint.isAvailable();
-      if(isAvailable=="Available"){
+      if (isAvailable == "Available") {
         const isFileExist = await this.helper.checkFile("settings.json");
-        if(isFileExist){
-          this.helper.readFile("settings.json").then((data)=>{
-            
-            let settings = JSON.parse(data);
-            //let settingEmail = settings.email;
-            //let settingPassword = settings.password;
-            //let settingFpPayment = settings.payment;
-            let settingFpLogin = settings.login;
-            if(settingFpLogin==1){
-              this.fingerprintLogin = true;
-            }
-          });
+        if (isFileExist) {
+          let settings = JSON.parse(await this.helper.readFile("settings.json"));
+          let fpLogin = settings.fpLogin;
+          
+          if (fpLogin == 'true'|| fpLogin) {
+            this.fingerprintLogin = true;
+            this.settingEmail = settings.email;
+            this.showFingerprint();
+          }
         }
       }
-
-    }catch(e){
+    } catch (e) {
+      alert(e);
       this.fingerprintLogin = false;
     }
-    
+
   }
 
-  showFingerprint(){
-    this.fingerprint.show({
-      clientId: 'Login: '+ this.login_email,
+  async showFingerprint() {
+    let fpResult = await this.fingerprint.show({
+      clientId: 'Login: ' + this.settingEmail,
       localizedFallbackTitle: 'Use Pin', //Only for iOS
-      localizedReason: 'Login: '+ this.login_email //Only for iOS
-    })
-      .then((result: any) => console.log(result))
-      .catch((error: any) => console.log(error));
-  }
+      localizedReason: 'Login: ' + this.settingEmail //Only for iOS
+    });
 
+    if(fpResult == "Success"){
+      let settings = JSON.parse(await this.helper.readFile("settings.json"));
+
+      const pbkJson = JSON.parse(await this.helper.readFile("publicKey.json"));
+      const sessionKey = JSON.parse(await this.helper.readFile("sessionKey.json"));
+      this.publicKey = pbkJson.pbk;
+      this.sessKey = sessionKey.key;
+      this.sessIv = sessionKey.iv;
+
+      var loginCipher = this.crypto.AESEncypto(JSON.stringify({
+        "email": this.settingEmail,
+        "password": settings.password
+      }), sessionKey.key, sessionKey.iv);
+      var uuid_cipher = this.crypto.RSAEncypto(JSON.parse(this.helper.getDeviceInfo()).uuid + "", pbkJson.pbk);
+
+      let login_data = JSON.stringify({
+        "uuid":uuid_cipher,
+        "data": loginCipher
+      });
+      this.loginReturn(login_data);
+    }
+  }
 }

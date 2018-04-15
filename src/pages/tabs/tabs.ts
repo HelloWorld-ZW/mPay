@@ -21,11 +21,16 @@ export class TabsPage {
 
   username: string;
   email: string;
+  password:any;
+
   balance: any;
 
   pbk: any;
   sessKey: any;
   sessIv: any;
+
+  fpPay:any;
+  fpLogin:any;
 
   //tab4Root = SettingsPage;
   constructor(public navParams: NavParams,
@@ -37,11 +42,16 @@ export class TabsPage {
 
     this.username = navParams.get("username");
     this.email = navParams.get("email");
+    this.password = navParams.get("password");
+    
     this.balance = navParams.get("balance");
 
     this.pbk = navParams.get("pbk");
     this.sessKey = navParams.get("sessKey");
     this.sessIv = navParams.get("sessIv");
+
+    this.fpPay = navParams.get("fpPay");
+    this.fpLogin = navParams.get("fpLogin");
 
 
     this.event.subscribe("updateBalance", (balance) => {
@@ -57,9 +67,12 @@ export class TabsPage {
 
     let navPar = {
       email: this.email,
+      password: this.password,
       pbk: this.pbk,
       sessKey: this.sessKey,
-      sessIv: this.sessIv
+      sessIv: this.sessIv,
+      fpPay: this.fpPay,
+      fpLogin: this.fpLogin
     };
 
     this.navCtl.push(this.pages[index], navPar);

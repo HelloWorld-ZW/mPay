@@ -17,13 +17,13 @@
     <ion-item>
       <ion-icon color="danger" item-start name="finger-print"></ion-icon>
       <ion-label>Fingerprint Login</ion-label>
-      <ion-toggle (ionChange)="fp_login($event)" checked="false"></ion-toggle>
+      <ion-toggle (ionChange)="fp_login($event)" checked="{{fpLogin}}"></ion-toggle>
     </ion-item>
 
     <ion-item>
       <ion-icon color="danger" item-start name="finger-print"></ion-icon>
       <ion-label>Fingerprint Payment</ion-label>
-      <ion-toggle checked="false"></ion-toggle>
+      <ion-toggle (ionChange)="fp_pay($event)" checked="{{fpPay}}"></ion-toggle>
     </ion-item>
 
   </ion-list>
