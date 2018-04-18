@@ -187,7 +187,7 @@ export class HelperProvider {
       }
       sum_digits += parseInt(digit);
     })
-    if ((10-(sum_digits % 10)) == parseInt(card.slice(-1))) {
+    if ((10 - (sum_digits % 10)) == parseInt(card.slice(-1))) {
       return true;
     }
     else {
@@ -203,25 +203,37 @@ export class HelperProvider {
   }
 
 
-  writeFile(filename, data){
-    this.file.writeFile(this.file.dataDirectory,filename, data, {replace:true});
+  writeFile(filename, data) {
+    this.file.writeFile(this.file.dataDirectory, filename, data, { replace: true });
   }
 
-  readFile( filename){
-    return this.file.readAsText(this.file.dataDirectory,filename);
+  readFile(filename) {
+    return this.file.readAsText(this.file.dataDirectory, filename);
   }
 
-  createFile( filename){
-    this.file.createFile(this.file.dataDirectory,filename, false);
+  createFile(filename) {
+    this.file.createFile(this.file.dataDirectory, filename, false);
   }
 
-  checkFile(filename){
+  checkFile(filename) {
     return this.file.checkFile(this.file.dataDirectory, filename);
   }
 
   validateEmail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
+  }
+
+  countDecimals(value) {
+    var match = ('' + value).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+    if (!match) { return 0; }
+    return Math.max(
+      0,
+      // Number of digits right of decimal point.
+      (match[1] ? match[1].length : 0)
+      // Adjust for scientific notation.
+      - (match[2] ? +match[2] : 0));
+
   }
 
 

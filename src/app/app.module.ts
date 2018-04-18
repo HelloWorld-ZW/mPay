@@ -18,6 +18,7 @@ import { AddcardPage } from '../pages/addcard/addcard';
 import { HistoryModalPage } from '../pages/history-modal/history-modal';
 import { TopupWithdrawModalPage } from '../pages/topup-withdraw-modal/topup-withdraw-modal';
 import { SettingsPage } from '../pages/settings/settings';
+import { SendMoneyPage } from '../pages/send-money/send-money';
 
 import { HandleSignupProvider } from '../providers/handle-signup/handle-signup';
 
@@ -52,7 +53,8 @@ import { FingerprintAIO } from '@ionic-native/fingerprint-aio';
     AddcardPage,
     HistoryModalPage,
     TopupWithdrawModalPage,
-    SettingsPage
+    SettingsPage,
+    SendMoneyPage
   ],
   imports: [
     BrowserModule,
@@ -76,7 +78,8 @@ import { FingerprintAIO } from '@ionic-native/fingerprint-aio';
     AddcardPage,
     HistoryModalPage,
     TopupWithdrawModalPage,
-    SettingsPage
+    SettingsPage,
+    SendMoneyPage
   ],
   providers: [
     StatusBar,

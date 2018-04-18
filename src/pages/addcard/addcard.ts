@@ -54,8 +54,6 @@ export class AddcardPage {
     this.sessIv = navParams.get("sessIv");
     this.pbk = navParams.get("pbk");
 
-
-    alert("sessKey = "+this.sessKey);
   }
 
   ionViewDidLoad() {

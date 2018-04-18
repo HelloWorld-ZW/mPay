@@ -9,6 +9,7 @@ import { CryptoProvider } from '../../providers/crypto/crypto';
 import { HelperProvider } from '../../providers/helper/helper';
 import { TopupWithdrawModalPage } from '../topup-withdraw-modal/topup-withdraw-modal';
 import { HistoryModalPage } from '../history-modal/history-modal';
+import { SendMoneyPage } from '../send-money/send-money';
 
 
 @Component({
@@ -81,6 +82,7 @@ export class HomePage {
 
     setInterval(()=>{
       this.loadTrans();
+      this.updatingBalance();
     },10000);
 
   }
@@ -457,6 +459,43 @@ export class HomePage {
     });
 
     await this.helper.writeFile("settings.json", settings);
+  }
+
+
+  sendMoney(){
+    let modal = this.modalCtrl.create(SendMoneyPage,
+      {
+        "cards": this.cards,
+        "balance": this.balance,
+        "email": this.email,
+        "pbk": this.pbk,
+        "sessKey": this.sessKey,
+        "sessIv": this.sessIv,
+        "passcode": this.passcode
+      });
+    modal.present();
+  }
+
+  updatingBalance(){
+    let emailStr = JSON.stringify({
+      'email': this.email
+    });
+
+    let emailCipher = this.crypto.AESEncypto(emailStr, this.sessKey, this.sessIv);
+
+    let dataPack = JSON.stringify({
+      "uuid": this.crypto.RSAEncypto(JSON.parse(this.helper.getDeviceInfo()).uuid + "", this.pbk),
+      "data": emailCipher
+    });
+
+    this.services.doPOST("mpay/account/updatingBalance", dataPack).then((response)=>{
+
+      let responseJson = JSON.parse(response.toString());
+      if(responseJson.response==1){
+        this.balance = this.crypto.AESDecypto(responseJson.balance,this.sessKey, this.sessIv);
+        this.event.publish("updateBalance", this.balance);
+      }
+    });
   }
 
 

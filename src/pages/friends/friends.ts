@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController,ToastController,Events, ActionSheetController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController,ToastController,Events, 
+  ActionSheetController, ModalController } from 'ionic-angular';
 import { ServicesProvider } from '../../providers/services/services';
 import { CryptoProvider } from '../../providers/crypto/crypto';
 import { HelperProvider } from '../../providers/helper/helper';
+import { SendMoneyPage } from '../send-money/send-money';
 
 
 
@@ -14,6 +16,8 @@ export class FriendsPage {
 
 
   email: string;
+  passcode:any;
+  balance:any;
 
   pbk: any;
   sessKey: any;
@@ -22,6 +26,8 @@ export class FriendsPage {
   previousVal:any=null;
 
   uuid_cipher: any;
+
+  cards:any;
 
   start:any=0;
   end:any=9;
@@ -39,7 +45,8 @@ export class FriendsPage {
     public helper: HelperProvider,
     public toastCtrl: ToastController,
     public event: Events,
-    public actionSheetCtrl: ActionSheetController
+    public actionSheetCtrl: ActionSheetController,
+    public modalCtrl: ModalController
 
   ) {
     this.email = navParams.get("email");
@@ -47,6 +54,12 @@ export class FriendsPage {
     this.pbk = navParams.get("pbk");
     this.sessKey = navParams.get("sessKey");
     this.sessIv = navParams.get("sessIv");
+
+    this.passcode = navParams.get("passcode");
+    this.balance = navParams.get("balance");
+
+    alert("balance: "+this.balance);
+
 
     this.uuid_cipher = this.crypto.RSAEncypto(this.helper.getDeviceUUID(), this.pbk);
 
@@ -276,14 +289,10 @@ export class FriendsPage {
         }, {
           text: 'Send Money',
           handler: () => {
-            console.log('View Balance clicked');
+            this.sendMoney(aFriend);
           }
         }, {
-          text: 'Cancel',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
+          text: 'Cancel'
         }
       ]
     });
@@ -363,5 +372,59 @@ export class FriendsPage {
 
   }
 
+  sendMoney(aFriend){
+    this.loadCards();
+    
+    let modal = this.modalCtrl.create(SendMoneyPage,
+      {
+        "cards": this.cards,
+        "balance": this.balance,
+        "email": this.email,
+        "pbk": this.pbk,
+        "sessKey": this.sessKey,
+        "sessIv": this.sessIv,
+        "passcode": this.passcode,
+        "friendSelected": aFriend.userEmail
+      });
+    modal.present();
+  }
 
+
+  // let modal = this.modalCtrl.create(SendMoneyPage,
+  //   {
+  //     "cards": this.cards,
+  //     "balance": this.balance,
+  //     "email": this.email,
+  //     "pbk": this.pbk,
+  //     "sessKey": this.sessKey,
+  //     "sessIv": this.sessIv,
+  //     "passcode": this.passcode
+  //   });
+  // modal.present();
+
+
+
+  loadCards() {
+    let uuid = (JSON.parse(this.helper.getDeviceInfo()).uuid) + "";
+    let cipher = JSON.stringify({
+      "uuid": this.crypto.RSAEncypto(uuid, this.pbk),
+      "email": this.crypto.RSAEncypto(this.email, this.pbk)
+    });
+    this.loadCardsRetturns(cipher)
+  }
+
+  async loadCardsRetturns(cipher) {
+
+    let response = await this.services.doPOST("mpay/registercard/loadCards", cipher).then(data => { return data; });
+
+    let responseJson = JSON.parse(response.toString());
+    let hiden = "**** **** **** ";
+    if (responseJson.response == 1) {
+      this.cards = JSON.parse(this.crypto.AESDecypto(responseJson.card, this.sessKey, this.sessIv));
+      (this.cards).forEach((aCard) => {
+        aCard.hidedNum = hiden + (aCard.CardNum.toString()).substring(12, 16);
+      });
+
+    }
+  }
 }

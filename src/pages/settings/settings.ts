@@ -66,11 +66,18 @@ export class SettingsPage {
     }
 
     this.updateSettings();
+
+    let fpSettings = {
+      fpLogin: this.fpLogin,
+      fpPay:this.fpPay
+    };
+    this.event.publish("updateSettings", fpSettings);
   }
 
   async fp_pay(event){
     //this.helper.createFile("settings.json");
     this.fpPay = event.checked;
+    
     let fileExist =  await this.helper.checkFile("settings.json");
 
     let settingInfo = JSON.stringify({
@@ -88,6 +95,13 @@ export class SettingsPage {
     }
 
     this.updateSettings();
+
+    let fpSettings = {
+      fpLogin: this.fpLogin,
+      fpPay:this.fpPay
+    };
+    this.event.publish("updateSettings", fpSettings);
+
   }
 
   async updateSettings(){

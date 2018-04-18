@@ -57,6 +57,11 @@ export class TabsPage {
     this.event.subscribe("updateBalance", (balance) => {
       this.balance = balance;
     });
+
+    this.event.subscribe("updateSettings", (settings) => {
+      this.fpPay = settings.fpPay;
+      this.fpLogin = settings.fpLogin;
+    });
   }
 
   _logout() {
