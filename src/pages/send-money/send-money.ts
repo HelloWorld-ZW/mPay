@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController, AlertController, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, AlertController, ToastController, Events } from 'ionic-angular';
 import { ServicesProvider } from '../../providers/services/services';
 import { CryptoProvider } from '../../providers/crypto/crypto';
 import { HelperProvider } from '../../providers/helper/helper';
@@ -45,7 +45,8 @@ export class SendMoneyPage {
     public alertCtrl: AlertController,
     public toastCtrl:ToastController,
     private fingerprint: FingerprintAIO,
-    private platform: Platform
+    private platform: Platform,
+    public event:Events
   ) {
 
     this.email = navParams.get("email");
@@ -62,6 +63,10 @@ export class SendMoneyPage {
     this.uuid_cipher = this.crypto.RSAEncypto(this.helper.getDeviceUUID(), this.pbk);
 
     this.loadFriends(this.start, this.end);
+
+    this.event.subscribe("returnToLogin", () => {
+      this.dismiss();
+    });
   }
 
   ionViewDidLoad() {

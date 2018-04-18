@@ -55,6 +55,10 @@ export class TopupWithdrawModalPage {
         this.title = this.type + " Money";
         break;
     }
+
+    this.event.subscribe("returnToLogin", () => {
+      this.dismiss();
+    });
   }
 
   ionViewDidLoad() {

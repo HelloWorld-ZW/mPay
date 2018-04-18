@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, Events } from 'ionic-angular';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
-import { LoadingController, AlertController, ToastController, ModalController } from 'ionic-angular';
+import { LoadingController, AlertController, ToastController, ModalController, Platform } from 'ionic-angular';
 import { CommunicationProvider } from '../../providers/communication/communication';
 import { CardPage } from '../card/card';
 import { ServicesProvider } from '../../providers/services/services';
@@ -10,6 +10,10 @@ import { HelperProvider } from '../../providers/helper/helper';
 import { TopupWithdrawModalPage } from '../topup-withdraw-modal/topup-withdraw-modal';
 import { HistoryModalPage } from '../history-modal/history-modal';
 import { SendMoneyPage } from '../send-money/send-money';
+import { LoginPage } from '../login/login';
+
+import { Subscription } from 'rxjs';
+import { FingerprintAIO } from '@ionic-native/fingerprint-aio';
 
 
 @Component({
@@ -20,13 +24,13 @@ export class HomePage {
 
   username: string;
   email: string;
-  password:any;
+  password: any;
   balance: any;
   ipAddress: string;
   passcode: string;
 
-  fpLogin:any;
-  fpPay:any;
+  fpLogin: any;
+  fpPay: any;
 
   pbk: any;
   sessKey: any;
@@ -37,7 +41,14 @@ export class HomePage {
   transactions: any = new Array();
   pages: any = [CardPage];
 
-  hasTransHistory:any;
+  hasTransHistory: any;
+
+  onResumeSubscription: Subscription;
+
+  merchantName: any;
+  amount: any;
+
+  fpAvailable:any;
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -50,7 +61,9 @@ export class HomePage {
     public helper: HelperProvider,
     public toastCtrl: ToastController,
     public event: Events,
-    public modalCtrl: ModalController
+    public modalCtrl: ModalController,
+    private fingerprint: FingerprintAIO,
+    public platform: Platform
   ) {
 
     //console.log(navParams.data);
@@ -69,9 +82,9 @@ export class HomePage {
     this.fpLogin = navParams.get("fpLogin");
 
     this.logHistory();
-  
+
     this.loadTrans();
-  
+
     this.loadCards();
 
     this.updateHistory();
@@ -80,11 +93,28 @@ export class HomePage {
 
     this.writeSettingFile();
 
-    setInterval(()=>{
+    setInterval(() => {
       this.loadTrans();
       this.updatingBalance();
-    },10000);
+    }, 10000);
 
+
+    this.onResumeSubscription = platform.resume.subscribe(() => {
+      //this.navCtrl.setRoot(LoginPage);
+      this.event.publish('returnToLogin');
+    });
+
+
+    this.checkFPAvailable();
+
+    this.event.subscribe("updateSettings", () => {
+      this.checkFPAvailable();
+    });
+  }
+
+  ngOnDestroy() {
+    // always unsubscribe your subscriptions to prevent leaks
+    this.onResumeSubscription.unsubscribe();
   }
   //constructor END
 
@@ -105,6 +135,9 @@ export class HomePage {
               let plainStr = this.crypto.AESDecypto(responseJson.cipher, this.sessKey, this.sessIv);
               let plainJson = JSON.parse(plainStr);
 
+              this.merchantName = plainJson.merchantName;
+              this.amount = plainJson.amount;
+
               let alert = this.alertCtrl.create({
                 title: 'Confirm Payment',
                 subTitle: 'Merchant: ' + plainJson.merchantName + "<br/>Amount: " + plainJson.amount,
@@ -122,7 +155,14 @@ export class HomePage {
                         this.selectCardAlert(plainJson.merchantId, data.text);
                       }
                       else {
-                        this.passcodeAlert(plainJson.merchantId, data.text, "");
+                        
+                        if(this.fpAvailable){
+                          this.showFingerprint(plainJson.merchantId, data.text, "");
+                        }
+                        else
+                          this.passcodeAlert(plainJson.merchantId, data.text, "");
+                        //this.checkIsAvailable(plainJson.merchantId, data.text, "");
+                        //this.passcodeAlert(plainJson.merchantId, data.text, "");
                       }
                     }
                   }
@@ -195,22 +235,22 @@ export class HomePage {
 
   }
 
-  async transProcessReturns(cipher){
+  async transProcessReturns(cipher) {
     let loading = this.loading.create({
       content: 'Processing...'
     });
     loading.present();
-    
-    this.services.doPOST("mpay/transaction/qrcodepayment",cipher).then((response)=>{
+
+    this.services.doPOST("mpay/transaction/qrcodepayment", cipher).then((response) => {
 
       let responseJson = JSON.parse(response.toString());
-      if(responseJson.response==1){
-        try{
+      if (responseJson.response == 1) {
+        try {
           let plainStr = this.crypto.AESDecypto(responseJson.cipher, this.sessKey, this.sessIv);
           let plainJson = JSON.parse(plainStr);
           this.balance = plainJson.balance;
           this.event.publish("updateBalance", this.balance);
-        }catch(e){
+        } catch (e) {
 
         }
 
@@ -223,7 +263,7 @@ export class HomePage {
         });
         toast.present();
       }
-      else{
+      else {
         let toast = this.toastCtrl.create({
           message: responseJson.response,
           duration: 3000,
@@ -237,8 +277,10 @@ export class HomePage {
   }
 
   passcodeAlert(merchantId, transCode, number) {
-    let passcodeAlert = this.alertCtrl.create({
+    
+    let alert = this.alertCtrl.create({
       title: 'Passcode',
+      subTitle: 'Pay ' + this.merchantName + ' EUR ' + this.amount,
       enableBackdropDismiss: false,
       inputs: [{
         name: 'passcode',
@@ -254,7 +296,7 @@ export class HomePage {
           text: 'Pay',
           handler: inputData => {
             if (inputData.passcode.toString() == this.passcode) {
-              passcodeAlert.dismiss();
+              alert.dismiss();
               this.paymentConfirmation(inputData.passcode.toString(), merchantId, transCode, number);
             }
             else {
@@ -268,7 +310,7 @@ export class HomePage {
           }
         }]
     });
-    passcodeAlert.present({
+    alert.present({
       keyboardClose: false
     });
   }
@@ -381,7 +423,7 @@ export class HomePage {
     }
   }
 
-  loadTrans(){
+  loadTrans() {
     let uuid = (JSON.parse(this.helper.getDeviceInfo()).uuid) + "";
     let cipher = JSON.stringify({
       "uuid": this.crypto.RSAEncypto(uuid, this.pbk),
@@ -392,34 +434,34 @@ export class HomePage {
     this.loadTransReturns(cipher)
 
   }
-  async loadTransReturns(cipher){
+  async loadTransReturns(cipher) {
     // let loading = this.loading.create({
     //   content: 'Processing...'
     // });
     // loading.present();
     let response = await this.services.doPOST("mpay/transaction/history", cipher).then(data => { return data; });
-    
+
     let responseJson = JSON.parse(response.toString());
-    if(responseJson.response==1){
-      this.hasTransHistory=true;
+    if (responseJson.response == 1) {
+      this.hasTransHistory = true;
 
       let historyStr = this.crypto.AESDecypto(responseJson.cipher, this.sessKey, this.sessIv);
       let historyArray = JSON.parse(historyStr);
 
       this.transactions = historyArray;
     }
-    else{
-      this.hasTransHistory=false;
+    else {
+      this.hasTransHistory = false;
     }
 
     //loading.dismiss();
   }
 
-  transTap(id,type){
-    alert(id+" "+type);
+  transTap(id, type) {
+    alert(id + " " + type);
   }
 
-  topup_withdraw(type:string){
+  topup_withdraw(type: string) {
     let modal = this.modalCtrl.create(TopupWithdrawModalPage,
       {
         "type": type,
@@ -433,14 +475,14 @@ export class HomePage {
     modal.present();
   }
 
-  updateHistory(){
+  updateHistory() {
     this.event.subscribe('updateHistory', () => {
       this.loadTrans();
     });
   }
 
-  viewHistory(aTrans){
-    let modal = this.modalCtrl.create(HistoryModalPage,{"aTrans": aTrans});
+  viewHistory(aTrans) {
+    let modal = this.modalCtrl.create(HistoryModalPage, { "aTrans": aTrans });
     modal.present();
   }
 
@@ -450,7 +492,7 @@ export class HomePage {
     });
   }
 
-  async writeSettingFile(){
+  async writeSettingFile() {
     let settings = JSON.stringify({
       'email': this.email,
       'password': this.password,
@@ -462,7 +504,7 @@ export class HomePage {
   }
 
 
-  sendMoney(){
+  sendMoney() {
     let modal = this.modalCtrl.create(SendMoneyPage,
       {
         "cards": this.cards,
@@ -476,7 +518,7 @@ export class HomePage {
     modal.present();
   }
 
-  updatingBalance(){
+  updatingBalance() {
     let emailStr = JSON.stringify({
       'email': this.email
     });
@@ -488,15 +530,76 @@ export class HomePage {
       "data": emailCipher
     });
 
-    this.services.doPOST("mpay/account/updatingBalance", dataPack).then((response)=>{
+    this.services.doPOST("mpay/account/updatingBalance", dataPack).then((response) => {
 
       let responseJson = JSON.parse(response.toString());
-      if(responseJson.response==1){
-        this.balance = this.crypto.AESDecypto(responseJson.balance,this.sessKey, this.sessIv);
+      if (responseJson.response == 1) {
+        this.balance = this.crypto.AESDecypto(responseJson.balance, this.sessKey, this.sessIv);
         this.event.publish("updateBalance", this.balance);
       }
     });
   }
+
+  async checkIsAvailable(merchantId, transCode, number) {
+    try {
+      await this.platform.ready();
+      const isAvailable = await this.fingerprint.isAvailable();
+      if (isAvailable == "Available") {
+        const isFileExist = await this.helper.checkFile("settings.json");
+        if (isFileExist) {
+          let settings = JSON.parse(await this.helper.readFile("settings.json"));
+          let fpPay = settings.fpPay;
+          //alert("settings: "+ await this.helper.readFile("settings.json"));
+          if (fpPay == 'true' || fpPay == true) {
+            this.showFingerprint(merchantId, transCode, number);
+          }
+          else {
+            this.passcodeAlert(merchantId, transCode, number);
+          }
+        }
+      }
+      else {
+        this.passcodeAlert(merchantId, transCode, number);
+      }
+    } catch (e) {
+      alert(e);
+    }
+
+  }
+
+  async showFingerprint(merchantId, transCode, number) {
+    let fpResult = await this.fingerprint.show({
+      clientId: 'Pay ' + this.merchantName + ' EUR ' + this.amount,
+      localizedFallbackTitle: 'Use Pin', //Only for iOS
+      localizedReason: 'Pay ' + this.merchantName + ' EUR ' + this.amount,
+    });
+
+    if (fpResult == "Success") {
+      this.paymentConfirmation(this.passcode.toString(), merchantId, transCode, number);
+    }
+
+  }
+
+  async checkFPAvailable(){
+    await this.platform.ready();
+    const isAvailable = await this.fingerprint.isAvailable();
+    if (isAvailable == "Available") {
+      const isFileExist = await this.helper.checkFile("settings.json");
+      if (isFileExist) {
+        let settings = JSON.parse(await this.helper.readFile("settings.json"));
+        let fpPay = settings.fpPay;
+        //alert("settings: "+ await this.helper.readFile("settings.json"));
+        if (fpPay == 'true' || fpPay == true) {
+          this.fpAvailable = true;
+        }
+        else {
+          this.fpAvailable = false;
+        }
+      }
+    }
+    else this.fpAvailable = false;
+  }
+
 
 
 }

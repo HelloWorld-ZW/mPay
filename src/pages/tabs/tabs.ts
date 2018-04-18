@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, Events } from 'ionic-angular';
+import { NavController, NavParams, Events, MenuController } from 'ionic-angular';
 import { FriendsPage } from '../friends/friends';
 import { HistoryPage } from '../history/history';
 //import { SettingsPage } from '../settings/settings';
@@ -35,7 +35,9 @@ export class TabsPage {
   //tab4Root = SettingsPage;
   constructor(public navParams: NavParams,
     public navCtl: NavController,
-    public event: Events) {
+    public event: Events,
+    public menuCtrl: MenuController
+  ) {
     //console.log(navParams);
     this.username = navParams.get("username");
     this.balance = navParams.get("balance");
@@ -62,6 +64,11 @@ export class TabsPage {
       this.fpPay = settings.fpPay;
       this.fpLogin = settings.fpLogin;
     });
+    //returnToLogin
+    this.event.subscribe("returnToLogin", () => {
+      this._logout();
+    });
+
   }
 
   _logout() {
