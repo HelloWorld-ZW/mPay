@@ -48,7 +48,7 @@ export class HomePage {
   merchantName: any;
   amount: any;
 
-  fpAvailable:any;
+  fpAvailable: any;
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -89,13 +89,18 @@ export class HomePage {
 
     this.updateHistory();
 
-    this.realodCardListener();
+    //this.realodCardListener();
+    // this.event.subscribe('reloadCardsHome', (newCards) => {
+    //   this.cards = newCards;
+    //   //this.loadCards();
+    // });
 
     this.writeSettingFile();
 
     setInterval(() => {
       this.loadTrans();
       this.updatingBalance();
+      this.loadCards();
     }, 10000);
 
 
@@ -155,8 +160,8 @@ export class HomePage {
                         this.selectCardAlert(plainJson.merchantId, data.text);
                       }
                       else {
-                        
-                        if(this.fpAvailable){
+
+                        if (this.fpAvailable) {
                           this.showFingerprint(plainJson.merchantId, data.text, "");
                         }
                         else
@@ -277,7 +282,7 @@ export class HomePage {
   }
 
   passcodeAlert(merchantId, transCode, number) {
-    
+
     let alert = this.alertCtrl.create({
       title: 'Passcode',
       subTitle: 'Pay ' + this.merchantName + ' EUR ' + this.amount,
@@ -318,39 +323,65 @@ export class HomePage {
   selectCardAlert(merchantId, transCode) {
     let selectCardAlert = this.alertCtrl.create({
       title: 'Select Card',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-        },
-        {
-          text: 'Pay',
-          handler: selectedCard => {
-            selectCardAlert.dismiss();
-            this.passcodeAlert(merchantId, transCode, selectedCard);
-          }
-        }]
+      // buttons: [
+      //   {
+      //     text: 'Cancel',
+      //     role: 'cancel',
+      //   },
+      //   {
+      //     text: 'Pay',
+      //     handler: selectedCard => {
+      //       selectCardAlert.dismiss();
+      //       this.passcodeAlert(merchantId, transCode, selectedCard);
+      //     }
+      //   }]
     });
 
-    selectCardAlert.setMessage("Not Enough credit, please select a card to pay");
-    (this.cards).forEach((aCard, index) => {
-      if (index == 0) {
-        selectCardAlert.addInput({
-          type: 'radio',
-          label: aCard.hidedNum,
-          value: aCard.CardNum.toString(),
-          checked: true
-        });
-      }
-      else {
-        selectCardAlert.addInput({
-          type: 'radio',
-          label: aCard.hidedNum,
-          value: aCard.CardNum.toString()
-        });
-      }
+    if (this.cards.length == 0) {
+      selectCardAlert.setMessage("Not Enough credit and No card registered! Please add a Card First!");
+      selectCardAlert.addButton({
+        text: 'OK',
+        role: 'cancel'
+      });
+    }
+    else {
+      selectCardAlert.setMessage("Not Enough credit, please select a card to pay");
+      (this.cards).forEach((aCard, index) => {
+        if (index == 0) {
+          selectCardAlert.addInput({
+            type: 'radio',
+            label: aCard.hidedNum,
+            value: aCard.CardNum.toString(),
+            checked: true
+          });
+        }
+        else {
+          selectCardAlert.addInput({
+            type: 'radio',
+            label: aCard.hidedNum,
+            value: aCard.CardNum.toString()
+          });
+        }
+      })
+      selectCardAlert.addButton({
+        text: 'Cancel',
+        role: 'cancel',
+      });
+      selectCardAlert.addButton({
+        text: 'Pay',
+        handler: selectedCard => {
+          selectCardAlert.dismiss();
+          //this.checkIsAvailable(merchantId, transCode, selectedCard)
+          //this.passcodeAlert(merchantId, transCode, selectedCard);
+          if (this.fpAvailable) {
+            this.showFingerprint(merchantId, transCode, selectedCard);
+          }
+          else
+            this.passcodeAlert(merchantId, transCode, selectedCard);
+        }
+      });
 
-    })
+    }
 
     selectCardAlert.present();
   }
@@ -416,10 +447,11 @@ export class HomePage {
     let hiden = "**** **** **** ";
     if (responseJson.response == 1) {
       this.cards = JSON.parse(this.crypto.AESDecypto(responseJson.card, this.sessKey, this.sessIv));
-      (this.cards).forEach((aCard) => {
-        aCard.hidedNum = hiden + (aCard.CardNum.toString()).substring(12, 16);
-      });
-
+      if (this.cards.length > 0) {
+        (this.cards).forEach((aCard) => {
+          aCard.hidedNum = hiden + (aCard.CardNum.toString()).substring(12, 16);
+        });
+      }
     }
   }
 
@@ -580,7 +612,7 @@ export class HomePage {
 
   }
 
-  async checkFPAvailable(){
+  async checkFPAvailable() {
     await this.platform.ready();
     const isAvailable = await this.fingerprint.isAvailable();
     if (isAvailable == "Available") {

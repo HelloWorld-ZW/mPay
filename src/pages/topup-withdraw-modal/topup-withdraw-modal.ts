@@ -62,19 +62,35 @@ export class TopupWithdrawModalPage {
   }
 
   ionViewDidLoad() {
-    (this.cards).forEach(acard => {
-      if (acard.hidedNum.toString().length === 19) {
-        acard.hidedNum = acard.hidedNum.toString().substring(15, 19);
-      }
-      switch (acard.CardNum.toString().substring(0, 1)) {
-        case "4":
-          acard.cardType = "Visa";
-          break;
-        case "5":
-          acard.cardType = "Master";
-          break;
-      }
-    });
+    if (this.cards == 0) {
+      let alert = this.alertCtrl.create({
+        title: 'No Card',
+        subTitle: 'No Registered card can use, Please add one and try again.',
+        buttons: [{
+          text: 'OK',
+          role: 'cancel',
+          handler: () => {
+            this.dismiss();
+          }
+        }]
+      });
+      alert.present();
+    } else {
+      (this.cards).forEach(acard => {
+        if (acard.hidedNum.toString().length === 19) {
+          acard.hidedNum = acard.hidedNum.toString().substring(15, 19);
+        }
+        switch (acard.CardNum.toString().substring(0, 1)) {
+          case "4":
+            acard.cardType = "Visa";
+            break;
+          case "5":
+            acard.cardType = "Master";
+            break;
+        }
+      });
+    }
+
   }
 
 
@@ -115,7 +131,7 @@ export class TopupWithdrawModalPage {
     else if (parseFloat(this.inputMoney) < 0.01) {
       let alert = this.alertCtrl.create({
         title: 'Error',
-        subTitle: 'Cannot '+this.type+' less than 0.01',
+        subTitle: 'Cannot ' + this.type + ' less than 0.01',
         buttons: ['Ok']
       });
       alert.present();
@@ -149,7 +165,7 @@ export class TopupWithdrawModalPage {
               let responseJson = JSON.parse(response.toString());
               if (responseJson.response == 1) {
                 this.balance = this.crypto.AESDecypto(responseJson.balance, this.sessKey, this.sessIv);
-                
+
                 this.event.publish("updateBalance", this.balance);
                 this.event.publish("updateHistory");
 
@@ -172,11 +188,11 @@ export class TopupWithdrawModalPage {
             });
             break;
           case "Withdraw":
-            this.services.doPOST("mpay/tpwd/withdraw", postData).then((response)=>{
+            this.services.doPOST("mpay/tpwd/withdraw", postData).then((response) => {
               let responseJson = JSON.parse(response.toString());
               if (responseJson.response == 1) {
                 this.balance = this.crypto.AESDecypto(responseJson.balance, this.sessKey, this.sessIv);
-                
+
                 this.event.publish("updateBalance", this.balance);
                 this.event.publish("updateHistory");
 

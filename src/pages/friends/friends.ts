@@ -58,9 +58,6 @@ export class FriendsPage {
     this.passcode = navParams.get("passcode");
     this.balance = navParams.get("balance");
 
-    alert("balance: "+this.balance);
-
-
     this.uuid_cipher = this.crypto.RSAEncypto(this.helper.getDeviceUUID(), this.pbk);
 
     this.loadFriends(this.start, this.end);

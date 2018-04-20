@@ -95,6 +95,9 @@ export class CardPage {
 
                         toast.present();
                         this.events.publish('reloadCards');
+                        // setTimeout(() => {
+                        //   this.events.publish('reloadCardsHome', this.cards);
+                        // }, 1500);
                         //this.loadCards();
 
                       } else {
