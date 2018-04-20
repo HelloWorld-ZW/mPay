@@ -100,6 +100,7 @@ export class HomePage {
     setInterval(() => {
       this.loadTrans();
       this.updatingBalance();
+      this.cards = new Array();
       this.loadCards();
     }, 10000);
 
